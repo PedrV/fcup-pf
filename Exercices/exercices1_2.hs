@@ -75,3 +75,19 @@ init2 :: [a] -> [a]
 init2 [] = error "empty list"
 init2 [x] = []
 init2 (x:xs) = x : init2 xs 
+
+-- 6
+--a)
+
+binom :: (Fractional a, Integral b ) => b -> b -> a
+binom n k = fromIntegral(nFac) / fromIntegral((kFac * nkFac))
+            where nFac = product [1..n]
+                  kFac = product [1..k]
+                  nkFac = product [1..n-k]
+
+--b)
+
+binom' :: (Fractional a) => Int -> Int -> a
+binom' n k = fromIntegral(nFac) / fromIntegral(kFac)
+            where nFac = product (drop (n-k) [1..n])
+                  kFac = product [1..k]
