@@ -76,7 +76,6 @@ init2 [] = error "empty list"
 init2 [x] = []
 init2 (x:xs) = x : init2 xs 
 
-<<<<<<< HEAD
 -- 7
 --a)
 
@@ -331,20 +330,3 @@ listTimes4 = map times4 [1..10]
 
 {- lambda forma apenas funcoes temporarias que sao usadas naquele contexto -}
 lambda = map (\(a,b) -> a + b) [(1,2),(3,5),(6,3),(2,6),(2,5)]
-=======
--- 6
---a)
-
-binom :: (Fractional a, Integral b ) => b -> b -> a
-binom n k = fromIntegral(nFac) / fromIntegral((kFac * nkFac))
-            where nFac = product [1..n]
-                  kFac = product [1..k]
-                  nkFac = product [1..n-k]
-
---b)
-
-binom' :: (Fractional a) => Int -> Int -> a
-binom' n k = fromIntegral(nFac) / fromIntegral(kFac)
-            where nFac = product (drop (n-k) [1..n])
-                  kFac = product [1..k]
->>>>>>> 9ec850b2d87255ada7f7e0876fd7f918eb6a2c13
