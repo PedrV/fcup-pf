@@ -49,7 +49,7 @@ area x y z =
 
 metade :: [a] -> ([a],[a])
 metade xs = (take len xs, drop len xs)
-            where len = div (fromIntegral(length xs)) 2 
+            where len = div (length xs) 2 
 
 -- 5
 --a)
@@ -175,7 +175,7 @@ curta xs = if length xs <= 2 then True else False
 
 --b)
 
---VIP
+
 length' :: [a] -> Int
 length' [] = 0
 length' (x:xs) = (+1) (length' xs)
@@ -185,18 +185,20 @@ curta' xs
         | (length' xs) < 3   = True
         | otherwise          = False
 
-{-
+
 curta'' :: [a] -> Bool
-curta'' [] = ????
-curta'' (x:xs) = let l = (+1) (length' xs) in
-                     if l < 3 then True else False              
--}
+curta'' [] = True
+curta'' [x] = True
+curta'' [x,y] = True
+curta'' [x,y,z] = True
+curta'' (_:_) = False   
+
 
 --13
 
 oneTo10 :: Int -> String
 oneTo10 x = case x of
-             0      -> "zero"
+             0      -> ""
              1      -> "um"
              2      -> "dois"
              3      -> "tres"
@@ -211,7 +213,7 @@ oneTo10 x = case x of
 
 elevenTo19 :: Int -> String
 elevenTo19 x
-        | x <= 10       = oneTo10 x -- 101 handeler (basicamente culpa o gajo anterior)
+        | x <= 10       = oneTo10 x -- 101 handler (basicamente culpa o gajo anterior)
         | x == 11      = "onze"
         | x == 12      = "doze"
         | x == 13      = "treze"
@@ -222,7 +224,7 @@ elevenTo19 x
 
 twentyTo99 :: Int -> String
 twentyTo99 x
-        | x <= 19   = elevenTo19 x -- 101 handeler (basicamente culpa o gajo anterior)
+        | x <= 19   = elevenTo19 x -- 101 handler (basicamente culpa o gajo anterior)
         | x == 20   = "vinte"
         | x == 30   = "trinta"
         | x == 40   = "quarenta"
@@ -242,7 +244,7 @@ twentyTo99 x
 
 ninty9To1000 :: Int -> String
 ninty9To1000 x
-        | x <= 99    = twentyTo99 x -- 101 handeler (basicamente culpa o gajo anterior)
+        | x <= 99    = twentyTo99 x -- 101 handler (basicamente culpa o gajo anterior)
         | x == 100   = "cem"
         | x == 200   = "duzentos"
         | x == 300   = "trezentos"
@@ -266,52 +268,31 @@ ninty9To1000 x
 
 mil_e_1To10000 :: Int -> String
 mil_e_1To10000 x
-        | x <= 99   = ninty9To1000 x -- 101 handeler (basicamente culpa o gajo anterior)
-        -- TODO : Talvez haja maneira rapida de fazer os 1000, 2000 ... tentar descobrir
-        | x == 2000   = "dois mil" 
-        | x == 3000   = "tres mil"
-        | x == 4000   = "quatro mil"
-        | x == 5000   = "cinco mil"
-        | x == 6000   = "seis mil"
-        | x == 7000   = "sete mil"
-        | x == 8000   = "oito mil"
-        | x == 9000   = "nove mil" 
-        | x == 10000  = "dez mil"    
-        | x <= 1999  = "mil e " ++ ninty9To1000 (x-1000)
-        | x <= 2999  = "dois mil e " ++ ninty9To1000 (x-2000)
-        | x <= 3999  = "tres mil e " ++ ninty9To1000 (x-3000)
-        | x <= 4999  = "quatro mil e " ++ ninty9To1000 (x-4000)
-        | x <= 5999  = "cinco mil e " ++ ninty9To1000 (x-5000)
-        | x <= 6999  = "seis mil e " ++ ninty9To1000 (x-6000)
-        | x <= 7999  = "sete mil e " ++ ninty9To1000 (x-7000)
-        | x <= 8999  = "oito mil e " ++ ninty9To1000 (x-8000)
-        | x <= 9999  = "nove mil e " ++ ninty9To1000 (x-9000)
-        | otherwise = "neste ponto so RIP"
+        | x <= 999                        = ninty9To1000 x -- 101 handler (basicamente culpa o gajo anterior)
+        | x >= 1000 && x < 2000           = "mil " ++  ninty9To1000(x-1000)
+        | x < 10000 && ((mod x 1000) == 0) = primeiro ++ " mil"
+        | x < 10000                       = primeiro ++ " mil e " ++ ninty9To1000(mod x 1000)
+        | x == 10000                      = "dez mil"
+        | otherwise                       = "fail"
+        where primeiro = oneTo10(div x 1000)
 
 dez_1To100k :: Int -> String
 dez_1To100k x
-        -- TODO : Talvez haja maneira rapida de fazer os 10000, 20000 ... tentar descobrir
-        | x == 20000   = "vinte mil" 
-        | x == 30000   = "trinta mil"
-        | x == 40000   = "quarenta mil"
-        | x == 50000   = "cinquenta mil"
-        | x == 60000   = "sessenta mil"
-        | x == 70000   = "setenta mil"
-        | x == 80000   = "oitenta mil"
-        | x == 90000   = "noventa mil" 
-        | x == 100000  = "cem"    
-        | x >= 10001 && x <= 19999   = elevenTo19(div x 1000) ++ " " ++ mil_e_1To10000 (x-10000)
-        | x <= 29999  = "vinte " ++ mil_e_1To10000 (x-20000)
-        | x <= 39999  = "trinta " ++ mil_e_1To10000 (x-30000)
-        | x <= 49999 = "quarenta " ++ mil_e_1To10000 (x-40000)
-        | x <= 59999  = "cinquenta " ++ mil_e_1To10000 (x-50000)
-        | x <= 69999  = "sessenta " ++ mil_e_1To10000 (x-60000)
-        | x <= 79999  = "setenta " ++ mil_e_1To10000 (x-70000)
-        | x <= 89999  = "ointenta " ++ mil_e_1To10000 (x-80000)
-        | x <= 99999  = "noventa " ++ mil_e_1To10000 (x-90000)
+        | x < 10000    = mil_e_1To10000 x -- 101 handler (basicamente culpa o gajo anterior)
+        | x < 20000    = elevenTo19(div x 1000) ++ " mil e " ++ mil_e_1To10000(mod x 1000)        
+        | x < 100000   = twentyTo99(div x 1000) ++ " mil e " ++ mil_e_1To10000(mod x 1000)    
         | otherwise = "never give up"
 
--- textual :: Int -> String
+cemkTo1M :: Int -> String
+cemkTo1M x
+        | x < 100000       = dez_1To100k x -- 101 handler (basicamente culpa o gajo anterior)
+        | x == 100000      = "cem mil" 
+        | x < 1000000      = ninty9To1000(div x 1000) ++ " mil " ++ ninty9To1000(mod x 1000)
+        | x == 1000000     = "Um milhao"
+cemkTo1M _ = "You just activated my trap card"
+
+textual :: Int -> String
+textual x = cemkTo1M(x)
 
 
 {-Extra-}
