@@ -76,6 +76,11 @@ init2 [] = error "empty list"
 init2 [x] = []
 init2 (x:xs) = x : init2 xs 
 
+--6
+--a)
+binom :: (Fractional a, Enum a) => a -> a -> a
+binom a b = product [1..a] / (product [1..b] * product [1..(a-b)])
+
 -- 7
 --a)
 
@@ -92,8 +97,8 @@ min3 x y z =
     if x <= y && x <= z 
         then x
         else if y <= x && y <= z
-            then y
-            else z
+                then y
+                else z
 
 --b)
 
