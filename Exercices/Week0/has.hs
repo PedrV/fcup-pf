@@ -1,3 +1,5 @@
+{- Week 0: trying stuff before actually learn something -}
+
 sum1 :: (Int -> (Int -> Int))
 sum1 x y = x+y -- recreating the sum function
 
