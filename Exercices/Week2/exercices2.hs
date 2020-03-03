@@ -6,9 +6,15 @@
 --c) [(True,Char)]  -- List of tuples, first bool, second char
 --d) ([Bool], [Char]) -- Tuple of lists of bools and lists of chars
 --e) [([a] -> [a])]  -- List of functions that takes lists and returns lists
---f) [(a -> a)]  -- List of functions that receive an argument and return an argument of the same type
+--f) [(Bool -> Bools)]  -- List of functions that receive an argument and return an argument of the same type
 
 --15
+--1) (Int,Int) -> Int 
+-- | takes a function (getting an Int and returning an Int), a tuple of Ints and returns an Int
+
+--2) f :: a -> Int
+--   g :: Int -> a
+
 --16
 
 --17
