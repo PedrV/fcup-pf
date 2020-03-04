@@ -49,8 +49,12 @@ isPrime n = let l = length (primes' n) in
 binom :: (Enum a, Fractional a) => a -> a -> a
 binom n k = product [1..n] / (product [1..k] * product [1..(n-k)])
 
---pascal :: (Enum a, Fractional a) => a -> [[a]]
-pascal n = [binom n x | x<-[n, n-1..0]] ++ [binom n x | x<-[n, n-1..0]]
+linha :: (Enum a, Fractional a) => a -> [a]
+linha n = [binom n k | k<-[n, n-1..0]] ++ [binom n k | k<-[n, n-1..0]]
+
+--pascal calls linha function to create the line for the given x
+pascal :: (Enum a, Fractional a) => a -> [[a]]
+pascal n = [linha x | x<-[0..n]]
 
 --28
 
@@ -66,7 +70,7 @@ pitagoricos n = [(x,y,z) | x<-[1..n], y<-[1..n], z<-[1..n], x^2+y^2 == z^2]
 anyTrue :: [Bool] -> Bool
 anyTrue [] = False
 anyTrue (x:xs) | x == True  = True
-           | otherwise  = anyTrue xs 
+               | otherwise  = anyTrue xs 
 
 forte :: String -> Bool
 forte ss = anyTrue [x >= 'a' && x <= 'z' | x<-ss] && anyTrue [x >= 'A' && x <= 'Z' | x<-ss] && length ss > 8
