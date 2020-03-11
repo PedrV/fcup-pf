@@ -76,9 +76,52 @@ elem'' y xs = anyTrue [ x==y | x<-xs]
 
 --34
 
+--a)
+leastSqrt1 :: (Num a, Ord a) => a -> a -> a
+leastSqrt1 n k  | k * k > n     = k
+                | otherwise     = leastSqrt1 n (k+1)
 
--- use a suplement fucntion maybe lambda
-leastSqrt :: (Num a, Ord a) => a -> a
-leastSqrt n | k * k > n     = k
-            | otherwise     = (+) k 1 leastSqrt n
-            where k = 0
+--b)
+issqrt :: (Num a, Ord a, Enum a) => a -> a
+issqrt n = (!!) [x | x<-[1..n], (x*x < n && (x+1)*(x+1) > n)] 0
+
+
+--35
+
+--a)
+factorial :: (Num a) => a -> a
+factorial 1 = 1
+factorial n = n * factorial (n-1)
+
+--b)
+rangeProduct :: (Num a, Enum a) => a -> a -> a
+rangeProduct a b = product [ x | x<-[a..b]]
+
+--c)
+facRange :: (Num a, Enum a) => a -> a
+facRange n = rangeProduct 1 n
+
+--36
+mdc :: Integer -> Integer -> Integer
+mdc a b | b == 0    = a
+        | otherwise = mdc b (mod a b)
+
+--37
+
+nub :: Eq a => [a] -> [a]
+nub [] = []
+nub (x:xs) = x : (nub [y | y<-xs, y /= x])
+                -- nub de apenas os elementos que sao diferentes daquele que eu ja pos no inicio (x)
+
+--38
+
+interspace :: a -> [a] -> [a]
+interspace b [x] = [x]
+-- ou -- interspace b (x:xs) = [x] ++ [b] ++ interspace b xs
+interspace b (x:xs) = x : b : interspace b xs 
+
+t2 a = a+2  
+
+--fmax :: Num a => (a -> b) -> a -> b
+fmax f 0 = f 0
+fmax f n = f n ++ fmax f n-1
