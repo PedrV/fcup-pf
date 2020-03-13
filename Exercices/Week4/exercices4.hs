@@ -1,6 +1,6 @@
 -- 31
 
-pot2 :: Num a => a -> a
+pot2 :: (Eq a, Num a) => a -> a
 pot2 0 = 1
 pot2 n = 2 * pot2(n-1)
 
@@ -89,7 +89,7 @@ issqrt n = (!!) [x | x<-[1..n], (x*x < n && (x+1)*(x+1) > n)] 0
 --35
 
 --a)
-factorial :: (Num a) => a -> a
+factorial :: (Eq a, Num a) => a -> a
 factorial 1 = 1
 factorial n = n * factorial (n-1)
 
@@ -120,8 +120,25 @@ interspace b [x] = [x]
 -- ou -- interspace b (x:xs) = [x] ++ [b] ++ interspace b xs
 interspace b (x:xs) = x : b : interspace b xs 
 
+--39
+
 t2 a = a+2  
 
---fmax :: Num a => (a -> b) -> a -> b
-fmax f 0 = f 0
-fmax f n = f n ++ fmax f n-1
+fapl :: (Ord a, Num a) => (a -> b) -> a -> [b]
+fapl f n | n > 0     = f n : fapl f (n-1)
+         | otherwise = []
+
+max' :: Ord a => [a] -> a
+max' [x] = x
+max' (x:xs) | (max' xs) > x    = max' xs
+            | otherwise        = x
+
+fmax :: (Num a, Ord a) => (a -> a) -> a -> a
+fmax f n = max' (fapl f n)
+
+--40
+
+fapl :: (Ord a, Num a) => (a -> b) -> a -> [b]
+fapl f n | n > 0     = f n : fapl f (n-1)
+         | otherwise = []
+
