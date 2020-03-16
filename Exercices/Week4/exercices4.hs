@@ -116,6 +116,7 @@ nub (x:xs) = x : (nub [y | y<-xs, y /= x])
 --38
 
 interspace :: a -> [a] -> [a]
+interspace b []  = []
 interspace b [x] = [x]
 -- ou -- interspace b (x:xs) = [x] ++ [b] ++ interspace b xs
 interspace b (x:xs) = x : b : interspace b xs 
@@ -138,7 +139,22 @@ fmax f n = max' (fapl f n)
 
 --40
 
-fapl :: (Ord a, Num a) => (a -> b) -> a -> [b]
-fapl f n | n > 0     = f n : fapl f (n-1)
-         | otherwise = []
+anyZero :: (Integer -> Integer) -> Integer -> Bool
+anyZero f n = or' [f x == 0 | x<-[n,n-1..0]]
+
+--41
+
+sumFun :: (Integer -> Integer) -> Integer -> Integer
+sumFun f n = sum [f x| x<-[n,n-1..0]]
+
+--42 
+--a)
+
+insert' :: Ord a => a -> [a] -> [a]
+insert' n [] = [n]
+insert' n [x] | n >= x      = [x] ++ [n]     
+              | n < x       = [n] ++ [x]
+insert' n (x:y:xs) | n >= x && n <= y    = x : n : y : xs
+                   | n <= x              = n : x : y : xs  
+                   | otherwise           = x : y : insert' n xs
 

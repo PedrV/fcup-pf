@@ -73,4 +73,4 @@ anyTrue (x:xs) | x == True  = True
                | otherwise  = anyTrue xs 
 
 forte :: String -> Bool
-forte ss = anyTrue [x >= 'a' && x <= 'z' | x<-ss] && anyTrue [x >= 'A' && x <= 'Z' | x<-ss] && length ss > 8
+forte ss = anyTrue [x >= 'a' && x <= 'z' | x<-ss] && anyTrue [x >= 'A' && x <= 'Z' | x<-ss] && anyTrue [x >= '0' && x <= '9' | x<-ss] && length ss >= 8
