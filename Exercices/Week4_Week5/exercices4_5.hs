@@ -231,7 +231,7 @@ bits n = do
 bits' :: Int ->[[Bool]]
 bits' n = [ [i,j] | i<-[True, False], j<-[True,False]]
 
---46
+--45 (for numbers I guess)
 -- list monad
 comb :: Int -> Int -> [[Int]]
 comb 0 _ = [[]]
@@ -244,10 +244,26 @@ comb' :: Int ->[[Int]]
 comb' n = [ [i,j] | i<-[1..n], j<-[1..n]]
 
 
+--46 
+
+changeHead :: (Eq a, Num a) => [a] -> a -> [a]
+changeHead [] _ = []
+changeHead (x:xs) n | n == 0    = x : xs
+                    | otherwise = changeHead xs (n-1) ++ [x]
+
+theRealSelect :: [Int] -> Int -> Int -> [(Int,[Int])]
+theRealSelect [] _ _ = []
+theRealSelect (x:xs) n l | n > l-2      = [(x,xs)]
+                         | otherwise    = [(x,xs)] ++  theRealSelect (changeHead (x:xs) 1) (n+1) l
+
+select :: [Int] -> [(Int,[Int])]
+select xs = theRealSelect xs 0 (length xs)
+ 
+
 {- test area -}
 
 --syntax sugar for epicMeme
-epicMemeWithSugar :: Integral a => [a] -> [String] --Integral because eve uses div
+epicMemeWithSugar :: Integral a => [a] -> [String] --Integral because even uses div
 epicMemeWithSugar xs = [ if x < 20 then "Epic?" else "MEME!" | x<-xs , even x]
 
 epicMeme :: Integral i => [i] -> [String]
