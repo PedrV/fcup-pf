@@ -179,7 +179,7 @@ isOrder (x:y:xs) | x > y       = False
 -- so in that case the minimum is the first element
 minimum' :: Ord a => [a] -> a
 minimum' [x] = x
-minimum' (x:xs) =  if isOrder (x:xs) then (!!) (x:xs) 0 else minimum' [ y | y<-xs, y<x]
+minimum' (x:xs) =  if isOrder (x:xs) then (!!) (x:xs) 0 else minimum' [ y | y<-xs, y<=x]
 
 --b)
 
@@ -220,11 +220,28 @@ mergeSort [x] = [x]
 mergeSort (x:xs) = merge (qSort [y | y<-(x:xs), y<=x])  (qSort [y | y<-(x:xs), y>x])
 
 --45
+-- list monad
 bits :: Int -> [[Bool]]
 bits 0 = [[]]
 bits n = do
-    c <- [True, False]
-    map (True :) (bits (n-1)) -- ([T,F] :)
+    c <- [True,False]
+    map (c :) (bits (n-1))
+
+-- list comp
+bits' :: Int ->[[Bool]]
+bits' n = [ [i,j] | i<-[True, False], j<-[True,False]]
+
+--46
+-- list monad
+comb :: Int -> Int -> [[Int]]
+comb 0 _ = [[]]
+comb n x = do
+    c <- [1..x]
+    map (c :) (comb (n-1) x)
+
+-- list comp
+comb' :: Int ->[[Int]]
+comb' n = [ [i,j] | i<-[1..n], j<-[1..n]]
 
 
 {- test area -}
