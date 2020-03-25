@@ -168,19 +168,18 @@ isOrd (x:xs) = insert' x (isOrd xs)
 
 --43
 --a)
-
+--check if a list is in increasing order
 isOrder :: Ord a => [a] -> Bool
 isOrder [] = True
 isOrder [x] = True
 isOrder (x:y:xs) | x > y       = False
                  | otherwise   = isOrder (y:xs) 
 
--- if the list is incresing order the result of the recursive step will be the empty list
--- so in that case the minimum is the first element
 minimum' :: Ord a => [a] -> a
 minimum' [x] = x
-minimum' (x:xs) =  if isOrder (x:xs) then (!!) (x:xs) 0 else minimum' [ y | y<-xs, y<=x]
-
+minimum' (x:xs) | list == []         = x
+                | otherwise          = minimum' xs               
+                where list = [y | y<-xs, y <= x]
 --b)
 
 delete :: Eq a => a -> [a] -> [a]
@@ -214,10 +213,21 @@ qSort (x:xs) = qSort ll ++ [x] ++ qSort rl
                where ll = [ y | y<-xs, y<=x ]
                      rl = [ y | y<-xs, y>x ]
 
-mergeSort :: Ord a => [a] -> [a]
-mergeSort [] = []
-mergeSort [x] = [x]
-mergeSort (x:xs) = merge (qSort [y | y<-(x:xs), y<=x])  (qSort [y | y<-(x:xs), y>x])
+{-  test area
+splitAt' :: [a] -> Int -> ([a],[a])
+splitAt' xs n = ( (take n xs), (drop (((-) l n)-1) xs) )
+            where l = length xs
+
+accTupples :: Int -> (a,a) -> a
+accTupples  n (x,y) | n == 1     = x
+                    | otherwise  = y
+
+test area -}
+
+msort :: Ord a => [a] -> [a]
+msort [] = []
+msort [x] = [x]
+msort (x:xs) = merge (qSort [y | y<-(x:xs), y<=x])  (qSort [y | y<-(x:xs), y>x])
 
 --45
 -- list monad
@@ -239,7 +249,7 @@ comb n x = do
     c <- [1..x]
     map (c :) (comb (n-1) x)
 
--- list comp
+-- list comp (for numbers)
 comb' :: Int ->[[Int]]
 comb' n = [ [i,j] | i<-[1..n], j<-[1..n]]
 
