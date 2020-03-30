@@ -94,10 +94,16 @@ rotate xs = [ [y,z,k] |  y<-xs,z<-xs,k<-xs, (y /= z) && (y /= k) && (k /= z)]
 
 --b)
 
+-- trade first and last element positions
 shift :: [a] -> [a]
 shift []     = []
 shift (x:xs) = y : reverse ys
               where (y:ys) = reverse (x:xs)
+
+-- put first in the last pos
+shift' :: [a] -> [a]
+shift' []     = []
+shift' (x:xs) = foldr (:) [x] xs
 
 --c)
 
@@ -187,9 +193,9 @@ mdc a b = until (\(a,b) -> b == 0) (\(a,b) -> (b, a`mod`b)) (a,b)
 
 --56
 
---scanl' :: (a -> a -> a) -> a -> [a] -> [a]
+scanl' :: (a -> a -> a) -> a -> [a] -> [a]
 scanl' f n [] = []
-scanl' f n (x:xs) = (foldl f n (x:xs)) ++ (scanl' f n xs) 
+scanl' f n (x:xs) = [(foldl f n (x:xs))] ++ (scanl' f n xs) 
 
---scanl'' :: (a -> a -> a) -> a -> [a] -> [a]
-scanl'' f n xs = reverse (scanl' f n (reverse xs))
+scanl'' :: Num a => (a -> a -> a) -> a -> [a] -> [a]
+scanl'' f n xs = reverse $ scanl' f n (reverse xs)
