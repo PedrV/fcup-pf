@@ -78,7 +78,7 @@ strings = [x : y | y <-"" : strings, x <- ['a'..'z']]
 
 --b
 stringsN n = string strings
-            where string (x:xs) | (length x) == n      = x : string xs    
+            where string (x:xs) | (length x) == n     = x : string xs    
                                 | (length x) < n      = string xs
                                 | (length x) > n      = []  
 

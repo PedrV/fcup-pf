@@ -181,6 +181,49 @@ lists n = n :-: n :-: n :-: (42 :-: Empty)
 
 data Tree a = EmptyTree | Node a (Tree a) (Tree a) deriving (Show, Eq, Ord)
 
+checkOrd :: Ord a => [a] -> Bool
+checkOrd [] = True
+checkOrd [x] = True
+checkOrd (x:y:xs) | x <= y      = checkOrd (y:xs)
+                  | otherwise   = False  
+
+treeList :: Tree a -> [a]
+treeList EmptyTree = []
+treeList (Node x left right) = treeList left ++ [x] ++ treeList right -- put root on top and list the left tree and right tree
+
+isTreeOrd :: Ord a => Tree a -> Bool
+isTreeOrd EmptyTree = True
+isTreeOrd (Node x left right) = checkOrd $ treeList (Node x left right)
+
+isTreeOrd' :: Ord a => Tree a -> Bool
+isTreeOrd' EmptyTree = True
+isTreeOrd' tree = checkOrd $ treeList tree -- não vamos usar "patter matching" da tree para nada por isso podemos só escrever
+                                           -- tree (ou outra coisa qualquer) que ele já sabe, pelo tipo, aquilo que esperar
+
+
+findElementTree :: Ord a => Tree a -> a -> Bool
+findElementTree EmptyTree n = False
+findElementTree (Node x left right) n | n == x      = True
+                                      | n < x       = findElementTree left n  
+                                      | n > x       = findElementTree right n
+
+
+-- encapsulamento da função com parametro extra para o nivel
+theFindElementTree' :: Ord a => Tree a -> a -> Int -> (Bool,Int)
+theFindElementTree' EmptyTree n a = (False,(-1))
+theFindElementTree' (Node x left right) n a | n == x      = (True,a)
+                                            | n < x       = theFindElementTree' left n (a+1)  
+                                            | n > x       = theFindElementTree' right n (a+1)
+
+
+findElementTree' :: Ord a => Tree a -> a -> (Bool,Int) 
+findElementTree' tree n = theFindElementTree' tree n 0
+
+
+--insertElementTree :: Ord a => Tree a -> a -> Tree a
+
+
+
 
 
 strings = [ x ++ [y] | x<-"":strings, y<-['a'..'z']]
