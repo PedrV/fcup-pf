@@ -3,10 +3,10 @@
 --------------------------------------------------
 
 
-
 -- type keyowrd is used to "rename" stuff, works like a synonym
 type IntList = [Int]
 type PhoneNumer = ([Int],String)
+type PairList k v = [(k,v)]
 
 mult2 :: IntList -> IntList
 mult2 xs = map (*2) xs
@@ -112,7 +112,8 @@ vecSka (Vector x y z) k = Vector (x*k) (y*k) (z*k)
 
 -- Typeclasses in ADT -- 
 
--- deriving typeclasses such as Eq, Show, 
+{- deriving typeclasses such as Eq, Show, haskell will check if all the parameters are of the typeclass Show and Eq, in this case
+   String and Int are both from Eq an Show-}
 data Persona = Persona {firstLastName :: String, pseudoName :: String, aage :: Int} deriving (Show,Eq)
 
 
@@ -125,6 +126,61 @@ getPseudo (Persona _ pN _) = pN
 
 -- since Eq is derived, we can compare 2 Personas
 -- (makePersona "Pedro Vieira" "Delicious" 18) == (makePersona "Pedro Vieira" "Delicious_2fast4you" 18) 
+
+
+-- Enum will check if every value constructur has empty parameters
+data Days = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday deriving (Show, Eq, Ord, Enum, Bounded)
+
+
+data Eithere a b = Lefte a | Righte b deriving (Show, Eq, Ord)
+
+
+intPos :: Int -> Eithere Int String
+intPos n | n >= 0       = Lefte n 
+         | otherwise    = Righte "Right pls"  
+
+name :: Eithere Int String -> String -- patter matching
+name (Lefte n)  = "Pedro"
+name (Righte x) = "Vieira"
+
+name' :: Eithere Int String -> String -- get value and case
+name' n = case n of 
+            Lefte n -> "Int"
+            Righte n -> "String"
+
+ints :: Eithere Int String -> Eithere Int String
+ints n = case n of
+            Lefte n
+                | n >= 0      -> Lefte n
+                | otherwise   -> Righte "Not positive"
+            Righte n -> Righte "Not int passed"
+
+
+-- Recursive type constructor -- 
+
+{- infix specifies the precedence of an operator
+   - infixl _ _ the l says the operator (3rd field) is left associative
+   - infixr _ _ the r says the operator is right associative  
+   - infix_ 0-9 _ the number tells the precedence, "priority", to other operators 
+   - infix_ _ ? specifies the operator symbol
+   if infix is passed, the associativty is non
+ If the digit is omitted, level 9 is assumed. Any operator lacking a fixity declaration is assumed to be infixl 9 -} 
+
+
+
+infixr 5 :-:  
+data List a = Empty | a :-: (List a) deriving (Show, Eq, Ord)  
+
+lists :: Int -> List Int
+lists n = n :-: n :-: n :-: (42 :-: Empty)
+
+
+
+-- Trees --
+
+
+data Tree a = EmptyTree | Node a (Tree a) (Tree a) deriving (Show, Eq, Ord)
+
 
 
 strings = [ x ++ [y] | x<-"":strings, y<-['a'..'z']]
