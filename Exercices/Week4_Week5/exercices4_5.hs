@@ -249,9 +249,15 @@ comb n x = do
     c <- [1..x]
     map (c :) (comb (n-1) x)
 
+-- no stop case
+permutations ::  [a] -> [[a]]
+permutations [] = []
+permutations (x:xs) = l ++ permutations (head l)
+                    where l = [xs ++ [x]]
+
 -- list comp (for numbers)
-comb' :: Int ->[[Int]]
-comb' n = [ [i,j] | i<-[1..n], j<-[1..n]]
+comb' :: Eq a => [a] -> [[a]]
+comb' xs = [ [y,z,k] |  y<-xs,z<-xs,k<-xs, (y /= z) && (y /= k) && (k /= z)] 
 
 
 --46 

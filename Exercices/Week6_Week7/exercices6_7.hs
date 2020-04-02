@@ -60,6 +60,9 @@ dec2Int [] = 0
 dec2Int (x:xs) = x * (numb size 10) + dec2Int xs
                 where size = length (xs)
 
+dec2Int' :: [Int] -> Int
+dec2Int' [] = 0
+dec2Int' (x:xs) = foldl (\x y -> x*10 + y ) 0  (x:xs)
 
 --50
 
@@ -87,12 +90,11 @@ isort (x:xs) = foldr insert' [] (x:xs)
 
 --52
 
+{- EXTRA from week 5 -}
+comb :: Eq a => [a] -> [[a]]
+comb xs = [ [y,z,k] |  y<-xs,z<-xs,k<-xs, (y /= z) && (y /= k) && (k /= z)] 
+
 --a)
-
-rotate :: Eq a => [a] -> [[a]]
-rotate xs = [ [y,z,k] |  y<-xs,z<-xs,k<-xs, (y /= z) && (y /= k) && (k /= z)] 
-
---b)
 
 -- trade first and last element positions
 shift :: [a] -> [a]
@@ -105,7 +107,10 @@ shift' :: [a] -> [a]
 shift' []     = []
 shift' (x:xs) = foldr (:) [x] xs
 
---c)
+--b)
+
+rotate :: [a] -> [[a]]
+rotate xs = foldr (\x y -> y ++ [shift' (last y)]) [xs]  (tail xs)
 
 
 --53

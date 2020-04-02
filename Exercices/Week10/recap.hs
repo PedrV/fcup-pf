@@ -208,6 +208,7 @@ findElementTree (Node x left right) n | n == x      = True
                                       | n > x       = findElementTree right n
 
 
+{- Only for style -}
 -- encapsulamento da função com parametro extra para o nivel
 theFindElementTree' :: Ord a => Tree a -> a -> Int -> (Bool,Int)
 theFindElementTree' EmptyTree n a = (False,(-1))
@@ -218,11 +219,59 @@ theFindElementTree' (Node x left right) n a | n == x      = (True,a)
 
 findElementTree' :: Ord a => Tree a -> a -> (Bool,Int) 
 findElementTree' tree n = theFindElementTree' tree n 0
+{- Only for style -}
 
 
---insertElementTree :: Ord a => Tree a -> a -> Tree a
+insertElementTree :: Ord a => Tree a -> a -> Tree a
+insertElementTree EmptyTree n = Node n EmptyTree EmptyTree
+insertElementTree (Node x left right) n | n == x     = Node x left right
+                                        | n < x      = Node x (insertElementTree left n) right
+                                        | n > x      = Node x left (insertElementTree right n) 
 
 
+constructTree :: Ord a => [a] -> Tree a
+constructTree [] = EmptyTree
+constructTree xs = Node middle (constructTree left) (constructTree right)
+                       where middle = (!!) xs n
+                             left = take n xs
+                             (r:right) = drop n xs -- drop takes the element in the middle with him, so the construct would not stop, so r:right is to drop
+                             n = ((length xs) `div` 2)
+
+smallestEle :: Ord a => Tree a -> a
+smallestEle (Node x EmptyTree EmptyTree) = x
+smallestEle (Node x left right) = smallestEle left
+
+biggestEle :: Ord a => Tree a -> a
+biggestEle (Node x EmptyTree EmptyTree) = x
+biggestEle (Node x left right) = biggestEle right
+
+
+removeElementTree :: Ord a => Tree a -> a -> Tree a
+removeElementTree EmptyTree _ = EmptyTree
+removeElementTree (Node x EmptyTree EmptyTree) n | n == x       = EmptyTree
+                                                 | otherwise    = Node x EmptyTree EmptyTree
+
+removeElementTree (Node x left right) n | n == x      = Node (smallestEle right) left (removeElementTree right (smallestEle right)) 
+                                        | n < x       = Node x (removeElementTree left n) right
+                                        | n > x       = Node x left (removeElementTree right n)
+
+
+treeHeigth :: Tree a -> Int
+treeHeigth EmptyTree = 0
+treeHeigth (Node x left right) = (+1) (max (treeHeigth left) (treeHeigth right))
+
+
+isBalanced :: Tree a -> Bool
+isBalanced EmptyTree = True
+isBalanced (Node x left right) | d <= 1 && (isBalanced left) && (isBalanced right)     = True 
+                               | otherwise                                             = False
+                               where d = abs ((treeHeigth left)-(treeHeigth right))     
+
+
+
+
+{- the infamous tree built by hand:
+(Node 20 (Node 3 (Node 2 (Node 1 EmptyTree EmptyTree) EmptyTree) (Node 4 EmptyTree EmptyTree)) (Node 42 (Node 21 EmptyTree EmptyTree) (Node 777 EmptyTree EmptyTree))) -}
 
 
 
