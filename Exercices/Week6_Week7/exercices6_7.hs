@@ -194,7 +194,7 @@ mult' i j = (foldi succ i i) + mult' i (pred j)
 
 --55 
 
-mdc a b = until (\(a,b) -> b == 0) (\(a,b) -> (b, a`mod`b)) (a,b)
+mdc a b = fst $ until (\(a,b) -> b == 0) (\(a,b) -> (b, a`mod`b)) (a,b)
 
 --56
 

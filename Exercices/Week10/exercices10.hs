@@ -14,9 +14,3 @@ constructTree xs = Node middle (constructTree left) (constructTree right)
                       left = take n xs
                       (r:right) = drop n xs
                       n = ((length xs) `div` 2)
-
-
-
-
-{- Link: https://videoconf-colibri.zoom.us/j/808939166
-   Password: Curry1920 -}
