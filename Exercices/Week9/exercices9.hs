@@ -4,20 +4,38 @@
 
 elefantes :: Int -> IO ()
 elefantes n = do 
-                let ys = map (\a -> [["Se " ++ (show a) ++ " elefantes incomadam muita gente, "],[(show (a+1)) ++ " incomodam muito mais !"]]) [1..n]
+                let ys = map (\a -> ["Se " ++ (show a) ++ " elefantes incomadam muita gente, ",(show (a+1)) ++ " incomodam muito mais!"]) [1..n]
                 sequence (map print (ys))
                 return ()
 
+-- 2º forma
 
---65 -99%
+-- 100%
+
+elefantes' :: Int -> IO ()
+elefantes' n = do 
+    sequence_ [ putStrLn ("Se " ++ (show a) ++ " elefantes incomadam muita gente, " ++ (show (a+1)) ++ " incomodam muito mais!") | a<-[1..n-1]]
+    return ()
+
+
+--65 -100%
 
 haskellwc :: IO ()
 haskellwc = do
     content <- getContents
     let l = length $ lines content
     let w = words content
-    let b = (countChars w) + (length w)
-    putStrLn ((show l) ++ " lines" ++  " | " ++ (show (length w)) ++ " words" ++ " | " ++ (show b)  ++ " chars")
+    let b = length content
+    putStr ((show l) ++ " lines" ++  " | " ++ (show (length w)) ++ " words" ++ " | " ++ (show b)  ++ " chars")
+    return ()
+
+haskellwc' :: String -> IO ()
+haskellwc' file = do
+    content <- readFile file
+    let l = length $ lines content
+    let w  = length $ words content
+    let b = length content
+    putStr ((show l) ++ " " ++ (show w) ++ " " ++ (show b))
     return ()
 
 
@@ -72,7 +90,7 @@ rot13String (s:ss) = if ( or [(elem s ['a'..'m']), (elem s ['A'..'M'])] ) then
     else foldl (\a _ -> pred a) s [1..13] : rot13String ss
 
 
---68 - todas as peças funcionam falta junta-las
+--68 -100%
 
 anyTrue :: [Bool] -> Bool
 anyTrue [] = False
@@ -87,12 +105,12 @@ adivinha = do
     start start_word secretWord 0
     return ()
 
--- dá "loop" uma vez a mais sempre que é dado um char (tentativa)
 start :: String -> String -> Int -> IO ()
 start start_word secretWord trys = do
 
     putChar '?'
     char <- getChar
+    wasteNewLine <- getChar
     let appliedLetter = verify start_word secretWord char
 
     if appliedLetter == secretWord then
@@ -102,9 +120,10 @@ start start_word secretWord trys = do
         else 
             do
                 if (appliedLetter == start_word) then
-                    --putStrLn ("Nao ocorre")
-                    -- putStrLn (appliedLetter)
-                    start appliedLetter secretWord (trys+1)
+                    do
+                        putStrLn ("Nao ocorre")
+                        putStrLn (appliedLetter)
+                        start appliedLetter secretWord (trys+1)
                     else 
                         do
                             putStrLn (appliedLetter)
