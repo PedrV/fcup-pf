@@ -1,6 +1,7 @@
 data Tree a = EmptyTree | Node a (Tree a) (Tree a) deriving (Eq, Ord, Show)
 
--- Aux functions -- 
+-- 1ª parte Week10 - Implementar basico arvores binarias e AVL --
+
 listTree :: Tree a -> [a]
 listTree EmptyTree = []
 listTree (Node a left right) = listTree left ++ [a] ++ listTree right 
@@ -37,13 +38,13 @@ findElementTree (Node a (leftTree) (rightTree)) x | x == a        = True
                                                   | x < a         = findElementTree leftTree x
                                                   | x > a         = findElementTree rightTree x
 
-
+-- 76
 smallestElement :: Ord a => Tree a -> a
 smallestElement EmptyTree = error "smallestElement: EmptyTree does not have elements"
 smallestElement (Node a (leftTree) (rightTree)) | leftTree == EmptyTree       = a
                                                 | otherwise                   = smallestElement leftTree
 
-
+-- 76
 biggestElement :: Ord a => Tree a -> a
 biggestElement EmptyTree = error "biggestElement: EmptyTree does not have elements"
 biggestElement (Node a (leftTree) (rightTree)) | rightTree == EmptyTree       = a
@@ -59,7 +60,7 @@ insertElement (Node a (leftTree) (rightTree)) x | x < a       = (Node a (insertE
 
 removeElement :: Ord a => Tree a -> a -> Tree a
 removeElement EmptyTree _ = EmptyTree
-removeElement (Node a EmptyTree EmptyTree) x = EmptyTree
+removeElement (Node a EmptyTree EmptyTree) x = if a == x then EmptyTree else Node a EmptyTree EmptyTree -- Not just EmptyTree
 removeElement (Node a (leftTree) (rightTree)) x | x == a          = Node y (removeElement leftTree y) rightTree
                                                 | x < a           = Node a (removeElement leftTree x) rightTree
                                                 | x > a           = Node a leftTree (removeElement rightTree x)
@@ -77,7 +78,7 @@ isBalanced (Node a (leftTree) (rightTree)) = abs ( (treeHeigth leftTree) - (tree
 
 ----- Arvores AVL -----
 
--- Simetrico há constrcutTree
+-- Simetrico há constructTree
 constructTreeAVL :: Ord a => [a] -> Tree a
 constructTreeAVL [] = EmptyTree
 constructTreeAVL xs = Node middle (constructTreeAVL left) (constructTreeAVL right)
@@ -141,12 +142,113 @@ insertElemAVL (Node a (leftTree) (rightTree)) x | x < a           = reEqui $ Nod
                                                 | x > a           = reEqui $ Node a leftTree (insertElemAVL rightTree x)
                                                 | x == a          = Node a leftTree rightTree 
 
-
+-- 77
 removeElemAVL :: Ord a => Tree a -> a -> Tree a
 removeElemAVL EmptyTree _ = EmptyTree
-removeElemAVL (Node a EmptyTree EmptyTree) x = EmptyTree
+removeElemAVL (Node a EmptyTree EmptyTree) x = if a == x then EmptyTree else Node a EmptyTree EmptyTree -- Not just EmptyTree
 removeElemAVL (Node a (leftTree) (rightTree)) x | x == a          = Node y leftTree (removeElemAVL rightTree y)
                                                 | x < a           = reEqui $ Node a (removeElemAVL leftTree x) rightTree
                                                 | x > a           = reEqui $ Node a leftTree (removeElemAVL rightTree x)
                                                 where y = smallestElement rightTree
-                                                 -}
+-}                                                 
+
+
+deviation :: Tree a -> Int
+deviation (Node _ leftTree rightTree) = heigthAVL leftTree - heigthAVL rightTree
+
+
+rotR :: Tree a -> Tree a
+rotR (Node x (Node y t1 t2) t3) = Node y t1 (Node x t2 t3) 
+rotR tree = tree
+
+rotL :: Tree a -> Tree a
+rotL (Node x t1 (Node y t2 t3)) = Node y (Node x t1 t2) t3
+rotL tree = tree
+
+correctRightDev :: Tree a -> Tree a
+correctRightDev (Node a leftTree rightTree) | d == -1          = rotR (Node a (rotL leftTree) rightTree)
+                                            | otherwise        = rotR (Node a leftTree rightTree)
+                                            where d = deviation leftTree
+correctRightDev tree = tree 
+
+
+correctLeftDev :: Tree a -> Tree a
+correctLeftDev (Node a leftTree rightTree) | d == 1            = rotL (Node a leftTree (rotR rightTree)) 
+                                           | otherwise         = rotL (Node a leftTree rightTree)
+                                           where d =  deviation rightTree
+correctLeftDev tree = tree
+
+
+equi :: Tree a -> Tree a
+equi tree | d == 2      = correctRightDev tree
+          | d == -2     = correctLeftDev tree
+          | otherwise   = tree
+          where d = deviation tree
+
+
+insertEle :: Ord a => Tree a -> a -> Tree a
+insertEle EmptyTree x = Node x EmptyTree EmptyTree
+insertEle (Node a leftTree rightTree) x | x < a       = equi $ Node a (insertEle leftTree x) rightTree   
+                                        | x > a       = equi $ Node a leftTree (insertEle rightTree x)
+                                        | x == a      = Node a leftTree rightTree
+
+-- 77
+removeEle :: Ord a => Tree a -> a -> Tree a
+removeEle EmptyTree _ = EmptyTree
+removeEle (Node a EmptyTree EmptyTree) x = if a == x then EmptyTree else Node a EmptyTree EmptyTree
+removeEle (Node a leftTree rightTree) x | x == a      = Node y (removeEle leftTree y) rightTree
+                                        | x > a       = equi $ Node a leftTree (removeEle rightTree x)
+                                        | x < a       = equi $ Node a (removeEle leftTree x) rightTree
+                                        where y = biggestElement leftTree
+
+
+-- 2ª Parte Week10 - Exericios folha --
+
+--70
+
+sumArv :: Num a => Tree a -> a
+sumArv EmptyTree = 0
+sumArv (Node a leftTree rightTree) = a + sumArv leftTree + sumArv rightTree
+
+
+--71
+listDecres :: Tree a -> [a]
+listDecres EmptyTree = []
+listDecres (Node a leftTree rightTree) = listDecres rightTree ++ [a] ++ listDecres leftTree
+
+--72
+nivel :: Int -> Tree a -> [a]
+nivel n EmptyTree = []
+nivel n (Node a leftTree rightTree) | n == 0     = listTree (Node a EmptyTree EmptyTree)
+                                    | otherwise  = (nivel (n-1) leftTree) ++ (nivel (n-1) rightTree)
+
+--73
+--a)
+insertPartition :: Ord a => [a] -> Tree a
+insertPartition xs = constructTree xs
+
+--b)
+simpleInsert :: Ord a => [a] -> Tree a
+simpleInsert xs = foldr (\a b -> insertElement b a) EmptyTree xs
+
+--c)
+insertAVL :: Ord a => [a] -> Tree a
+insertAVL xs = foldr (\a b -> insertEle b a) EmptyTree xs
+
+
+--74
+mapTree :: (a -> b) -> Tree a -> Tree b
+mapTree f (Node a EmptyTree EmptyTree) = Node (f a) EmptyTree EmptyTree   
+mapTree f (Node a EmptyTree rightTree) = Node (f a) EmptyTree (mapTree f rightTree)
+mapTree f (Node a leftTree EmptyTree) = Node (f a) (mapTree f leftTree) EmptyTree
+mapTree f (Node a leftTree rightTree) = Node (f a) (mapTree f leftTree) (mapTree f rightTree)
+
+--75 (partial correct)
+foldrTree f p (Node a EmptyTree EmptyTree) = f p a
+foldrTree f p (Node a EmptyTree rightTree) = f a (foldrTree f p rightTree)
+foldrTree f p (Node a leftTree EmptyTree) = f a (foldrTree f p leftTree)
+foldrTree f p (Node a leftTree rightTree) = f a (foldrTree f (foldrTree f p leftTree) rightTree)
+
+
+foldr' f p [] = p
+foldr' f p (x:xs) = f x (foldr' f p xs)    
