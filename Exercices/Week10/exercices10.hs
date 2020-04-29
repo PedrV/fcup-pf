@@ -243,12 +243,39 @@ mapTree f (Node a EmptyTree rightTree) = Node (f a) EmptyTree (mapTree f rightTr
 mapTree f (Node a leftTree EmptyTree) = Node (f a) (mapTree f leftTree) EmptyTree
 mapTree f (Node a leftTree rightTree) = Node (f a) (mapTree f leftTree) (mapTree f rightTree)
 
---75 (partial correct)
+
+--75
+foldArv :: (a -> b -> b -> b) -> b -> Tree a -> b
+foldArv f v EmptyTree = v
+foldArv f v (Node a leftTree rightTree) = f a (foldArv f v leftTree) (foldArv f v rightTree)
+
+
+
+-------- (partial correct) --------
+--75 
 foldrTree f p (Node a EmptyTree EmptyTree) = f p a
 foldrTree f p (Node a EmptyTree rightTree) = f a (foldrTree f p rightTree)
 foldrTree f p (Node a leftTree EmptyTree) = f a (foldrTree f p leftTree)
 foldrTree f p (Node a leftTree rightTree) = f a (foldrTree f (foldrTree f p leftTree) rightTree)
+---------------- // ----------------
 
 
+
+-- Intro to QuadTrees; TODO: fazer exercicios analogos às binary trees para Quad trees
+
+--75 (QuadTrees)
+
+data QuadTree a = QNode a (QuadTree a) (QuadTree a) (QuadTree a) (QuadTree a) | EmptyQuad deriving (Eq,Show,Ord)
+
+foldrQuad :: (a -> b -> b -> b -> b -> b) -> b -> QuadTree a -> b
+foldrQuad f x EmptyQuad = x
+foldrQuad f x (QNode a t1 t2 t3 t4) = f a (foldrQuad f x t1) (foldrQuad f x t2) (foldrQuad f x t3) (foldrQuad f x t4)
+
+
+
+
+----- Recordar -----
 foldr' f p [] = p
 foldr' f p (x:xs) = f x (foldr' f p xs)    
+-------- // --------
+
