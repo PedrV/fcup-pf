@@ -2,10 +2,12 @@ data Tree a = EmptyTree | Node a (Tree a) (Tree a) deriving (Eq, Ord, Show)
 
 -- 1ª parte Week10 - Implementar basico arvores binarias e AVL --
 
+-- Help functions --
+
+
 listTree :: Tree a -> [a]
 listTree EmptyTree = []
 listTree (Node a left right) = listTree left ++ [a] ++ listTree right 
-
 
 
 -- Quicksort
@@ -20,6 +22,9 @@ removeDuplicates :: (Ord a) => [a] -> [a]
 removeDuplicates [] = []
 removeDuplicates (x:xs) = x : removeDuplicates ([y | y<-xs, y /= x])
 
+
+
+-- Arvores Binárias --
 
 
 constructTree :: Ord a => [a] -> Tree a
@@ -78,6 +83,7 @@ isBalanced (Node a (leftTree) (rightTree)) = abs ( (treeHeigth leftTree) - (tree
 
 ----- Arvores AVL -----
 
+
 -- Simetrico há constructTree
 constructTreeAVL :: Ord a => [a] -> Tree a
 constructTreeAVL [] = EmptyTree
@@ -99,58 +105,6 @@ searchAVL (Node a (leftTree) (rightTree)) x | x == a        = True
 heigthAVL :: Tree a -> Int 
 heigthAVL EmptyTree = 0
 heigthAVL (Node a (leftTree) (rightTree)) = max (1 + heigthAVL leftTree) (1 + heigthAVL rightTree) 
-
-
-{- desvio :: Tree a -> Int
-desvio (Node _ (left_side) (right_side)) = heigthAVL left_side - heigthAVL right_side
-
-
-rotRight :: Tree a -> Tree a
-rotRight (Node x (Node y t1 t2) t3) = Node y t1 (Node x t2 t3) 
-rotRight t = t
-
-
-rotLeft :: Tree a -> Tree a
-rotLeft (Node x t1 (Node y t2 t3)) = Node y (Node x t1 t2) t3
-rotLeft t = t 
-
-
-
-correctDeviationRigth :: Tree a -> Tree a
-correctDeviationRigth (Node a (leftTree) (rightTree)) | desvio leftTree == -1       = rotRight (Node a (rotLeft leftTree) rightTree)
-                                                      | otherwise                   = rotRight (Node a leftTree rightTree)
-correctDeviationRigth tree = tree 
-
-
-correctDeviationLeft :: Tree a -> Tree a
-correctDeviationLeft (Node a (leftTree) (rightTree)) | desvio rightTree == 1        = rotLeft (Node a leftTree (rotRight rightTree))
-                                                     | otherwise                    = rotLeft (Node a leftTree rightTree)
-correctDeviationLeft tree = tree
-
-
-
-reEqui :: Tree a -> Tree a
-reEqui tree | des == 2     = correctDeviationRigth tree
-            | des == -2    = correctDeviationLeft tree 
-            | otherwise    = tree
-            where des = desvio tree
-
-
-insertElemAVL :: Ord a => Tree a -> a -> Tree a
-insertElemAVL EmptyTree x = Node x EmptyTree EmptyTree
-insertElemAVL (Node a (leftTree) (rightTree)) x | x < a           = reEqui $ Node a (insertElemAVL leftTree x) rightTree
-                                                | x > a           = reEqui $ Node a leftTree (insertElemAVL rightTree x)
-                                                | x == a          = Node a leftTree rightTree 
-
--- 77
-removeElemAVL :: Ord a => Tree a -> a -> Tree a
-removeElemAVL EmptyTree _ = EmptyTree
-removeElemAVL (Node a EmptyTree EmptyTree) x = if a == x then EmptyTree else Node a EmptyTree EmptyTree -- Not just EmptyTree
-removeElemAVL (Node a (leftTree) (rightTree)) x | x == a          = Node y leftTree (removeElemAVL rightTree y)
-                                                | x < a           = reEqui $ Node a (removeElemAVL leftTree x) rightTree
-                                                | x > a           = reEqui $ Node a leftTree (removeElemAVL rightTree x)
-                                                where y = smallestElement rightTree
--}                                                 
 
 
 deviation :: Tree a -> Int
@@ -200,6 +154,9 @@ removeEle (Node a leftTree rightTree) x | x == a      = Node y (removeEle leftTr
                                         | x > a       = equi $ Node a leftTree (removeEle rightTree x)
                                         | x < a       = equi $ Node a (removeEle leftTree x) rightTree
                                         where y = biggestElement leftTree
+
+
+
 
 
 -- 2ª Parte Week10 - Exericios folha --
@@ -267,6 +224,7 @@ foldrTree f p (Node a leftTree rightTree) = f a (foldrTree f (foldrTree f p left
 
 data QuadTree a = QNode a (QuadTree a) (QuadTree a) (QuadTree a) (QuadTree a) | EmptyQuad deriving (Eq,Show,Ord)
 
+-- Para fazer fold's a arvores binarias, o fold tem de ter a entrar (menos o "b" de saida e "a" de entrada) tantos parametros quanto podem sair ramos dos nós
 foldrQuad :: (a -> b -> b -> b -> b -> b) -> b -> QuadTree a -> b
 foldrQuad f x EmptyQuad = x
 foldrQuad f x (QNode a t1 t2 t3 t4) = f a (foldrQuad f x t1) (foldrQuad f x t2) (foldrQuad f x t3) (foldrQuad f x t4)
