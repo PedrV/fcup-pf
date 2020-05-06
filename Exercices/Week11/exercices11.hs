@@ -31,6 +31,12 @@ inter :: PShape -> PShape -> Bool
 inter (Rectangulo (Point x1 y1) (Point x2 y2)) (Rectangulo (Point x3 y3) (Point x4 y4)) | x3 >= x1 && y4 >= y1                  = True
                                                                                         | x3 <= x1 && y4 >= y1 && x4 >= x1      = True
                                                                                         | otherwise                             = False  
+
+interS :: PShape -> PShape -> Bool
+interS (Rectangulo (Point x1 y1) (Point x2 y2)) (Rectangulo (Point x3 y3) (Point x4 y4)) | x3 > x2 || x4 < x1                = False
+                                                                                         | y3 > y2 || y4 < y1                = False
+                                                                                         | otherwise                         = True  
+
 --80
 
 --- Test functions ---
@@ -44,27 +50,35 @@ parentStack (ss) | l == '(' || l == '[' || l == '{'   = push (l) (parentStack $ 
                  where l = last ss
 ---      //      ---
 
+-- Se expressao apenas tiver parentises otherwise pode funcionar para receber os parentises abertos
+-- Se expressao tiver mais coisas sem ser parentises entao temos de testar a ver se é parentises aberto para dar push (codigo comentado)
 parentOp :: String -> Stack Char -> Bool
-parentOp [] _ = True
-parentOp (s:ss) stk | s == ')'        = case top stk of
-                                      '('       -> parentOp ss (pop stk)
-                                      otherwise -> False
+parentOp [] stk = isEmpty stk
+parentOp (s:ss) stk | s == ')'        = if isEmpty stk then False else 
+                                            case top stk of
+                                            '('       -> parentOp ss (pop stk)
+                                            otherwise -> False
 
-                    | s == '('        = parentOp ss (push s stk)
+                    -- | s == '('        = parentOp ss (push s stk)
 
-                    | s == ']'        = case top stk of
-                                      '['       -> parentOp ss (pop stk)
-                                      otherwise -> False
+                    | s == ']'        = if isEmpty stk then False else 
+                                            case top stk of
+                                            '['       -> parentOp ss (pop stk)
+                                            otherwise -> False
   
-                    | s == '['        = parentOp ss (push s stk)
+                    -- | s == '['        = parentOp ss (push s stk)
                     
-                    | s == '}'        = case top stk of
-                                      '{'       -> parentOp ss (pop stk)
-                                      otherwise -> False
+                    | s == '}'        = if isEmpty stk then False else 
+                                            case top stk of
+                                            '{'       -> parentOp ss (pop stk)
+                                            otherwise -> False
              
-                    | s == '{'        = parentOp ss (push s stk)
+                    -- | s == '{'        = parentOp ss (push s stk)
                     
-                    | otherwise       = parentOp ss stk
+                    | otherwise       = parentOp ss (push s stk)
+
+                    -- | otherwise    = parentOp ss stk
+
 
 parent :: String -> Bool
 parent s = parentOp s empty
@@ -96,6 +110,7 @@ main = do
     return()
 
 
+
 --82
 
 --1)
@@ -122,6 +137,7 @@ graph = [(1,2),(1,4),(2,5),(2,3),(2,6),(3,6),(6,5),(4,5)]
 allPaths x y (Vertice v [n]) | x == v -}
 
 
+
 {--83
 
 (2) - Se s = empty
@@ -142,9 +158,10 @@ allPaths x y (Vertice v [n]) | x == v -}
 -}
 
 
+
 --84
 
-data Map a b =  Map Char Int deriving Show
+data Map a b =  Map Char Int
 
 instance {-(Eq a, Eq b) =>-} Eq (Map a b) where
     (Map a b) == (Map c d) = a == c     
@@ -152,14 +169,27 @@ instance {-(Eq a, Eq b) =>-} Eq (Map a b) where
 instance Num (Map a b) where
     (Map a b) + (Map d c) = Map a (b+c)
     (Map a b) * (Map d c) = Map a (b*c)
+    negate (Map a b) = Map a (-b)
 
+instance Show (Map a b) where
+    show (Map a b) = show a ++ (": " ++ show b)
+
+-- Reduce the word to the unique chars --
+filterUniq :: Eq a => [a] -> [a]
+filterUniq [] = []
+filterUniq (x:xs) = x : filterUniq ([y | y<-xs, y /= x])
+
+-- Construct Map for each unique char of the word/line --
 contChar :: String -> [Map Char Int]
-contChar ss = foldr (\a b -> (Map a 1) : b) [] ss
+contChar ss = foldr (\a b -> (Map a 0) : b) [] (filterUniq ss)
  
-
--- WIP wtf ?? --
+-- Count how many occurences --
 contCharOP :: String -> [Map Char Int]
-contCharOP (s:ss) = foldl (\b a -> (head (map (\z -> if ((==) z (Map a 1)) then z + (Map '+' 1) else z) b)) : b ) [Map s 1] ss
+contCharOP (s:ss) = foldl (\a b -> (map (\z -> if z == Map b 1 then z + Map '+' 1 else z) a))  (contChar (s:ss)) (s:ss)
+
+
+
+
 
 
 --- Used to test the inter function with file inputs ---
