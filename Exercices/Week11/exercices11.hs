@@ -131,7 +131,7 @@ graph :: [(Int,Int)]
 graph = [(1,2),(1,4),(2,5),(2,3),(2,6),(3,6),(6,5),(4,5)]
 
 
---3)
+--3) Broken
 
 {- allPaths :: a -> a -> Graph a -> Int
 allPaths x y (Vertice v [n]) | x == v -}
@@ -139,7 +139,6 @@ allPaths x y (Vertice v [n]) | x == v -}
 
 
 {--83
-
 (2) - Se s = empty
     top (push x s) = top (Stack x) = x  --- Correto
     
