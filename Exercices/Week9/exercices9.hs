@@ -64,7 +64,8 @@ invertInput :: IO ()
 invertInput = do
     content <- getContents
     let l = lines content
-    putStrLn (invertLineInput l)
+    let x = reverse $ words (invertLineInput l)
+    putStrLn (unwords x)
     return ()
 
 invertLineInput :: [String] -> String
@@ -177,4 +178,4 @@ nim = do
 
     
 main = do
-    nim
+    invertInput

@@ -65,6 +65,8 @@ insertElement (Node a (leftTree) (rightTree)) x | x < a       = (Node a (insertE
 
 removeElement :: Ord a => Tree a -> a -> Tree a
 removeElement EmptyTree _ = EmptyTree
+remover k (Node x leftTree EmptyTree)  | k == x = leftTree
+remover k (Node x EmptyTree rightTree) | k == x = rightTree
 removeElement (Node a EmptyTree EmptyTree) x = if a == x then EmptyTree else Node a EmptyTree EmptyTree -- Not just EmptyTree
 removeElement (Node a (leftTree) (rightTree)) x | x == a          = Node y (removeElement leftTree y) rightTree
                                                 | x < a           = Node a (removeElement leftTree x) rightTree
