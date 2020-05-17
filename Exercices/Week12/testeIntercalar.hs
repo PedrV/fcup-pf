@@ -39,10 +39,9 @@ diferentes' :: Eq a => [a] -> [a]
 diferentes' xs = [ fst y | y <- zip xs (tail xs), (fst y) /= (snd y)] ++ [last xs]
 
 
--- Incompleto
 --4
 zip3' :: [a] -> [b] -> [c] -> [(a,b,c)]
-zip3' xs ys zs = [(l, l1, l2) | l<-xs, l1<-ys, l2<-zs]
+zip3' xs ys zs = [(fst (fst l), fst (snd l), snd l) | l<- zip (zip xs ys) zs]
 
 --5
 partir :: Eq a => [a] -> a -> ([a],[a])
