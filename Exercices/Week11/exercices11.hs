@@ -131,8 +131,8 @@ graph :: [(Int,Int)]
 graph = [(1,2),(1,4),(2,5),(2,3),(2,6),(3,6),(6,5),(4,5)]
 
 
-ud :: [(Bool -> Bool)]
-ud xs = xs
+{- ud :: [(Bool -> Bool)]
+ud xs = xs -}
 
 --3) Broken
 

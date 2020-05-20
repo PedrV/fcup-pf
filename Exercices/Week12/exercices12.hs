@@ -259,3 +259,88 @@ Objetivo: length (map f xs) = length xs
 <=>         length (x:xs)
 
 ---------------------------------------------------------------------------------------------------
+
+--95 
+
+sum [] = 0                      (s.1)
+sum (x:xs) = x + sum xs         (s.2)
+
+
+Objetivo: sum (map (1+) xs) = length xs + (sum xs)
+
+-> Caso Base: xs = []
+
+         sum (map (1+) [])     (m.1)
+         sum []                (s.1) 
+         0                     (elementro neutro da addi)
+         0 + 0                 (l.1)
+         length [] + 0         (s.1)
+         length [] + sum [] 
+
+
+-> Caso de Induçao: 
+
+                sum (map (1+) (x:xs)) => length (x:xs) + (sum (x:xs))
+
+-> Hipotese: sum (map (1+) xs) = length xs + (sum xs)
+
+
+                sum (map (1+) (x:xs))                   (m.2)
+                sum ((1+) x): (map (1+) xs)             (s.2)
+                (1+) x + sum (map (1+) xs)              H.I       
+                1 + x + length xs + (sum xs)            (Associativedade de add)
+                x + 1 + length xs + sum xs              (l.2)
+                length (x:xs) + x + sum xs              (s.2)
+                length (x:xs) + (sum (x:xs))
+
+---------------------------------------------------------------------------------------------------
+
+--96
+
+Objetivo: map f (xs ++ ys) = map f xs ++ map f ys
+
+-> Caso Base: 
+                map f ([] ++ ys)        (++.1)
+                map f ys                (++.1)
+                [] ++ map f ys          (m.1)
+                map f [] ++ map f ys    
+
+-> Caso de Indução: map f ((x:xs) ++ ys) = map f (x:xs) ++ map f ys
+
+   Hipotese: map f (xs ++ ys) = map f xs ++ map f ys
+
+        map f ((x:xs) ++ ys)            (++.2)
+        map f (x : (xs++ys))            (m.2)
+        f x : (map f (xs++ys)           H.I      
+        f x : (map f xs ++ map f ys)    (++.2)
+        (f x : map f xs) ++ map f ys    (m.2)
+        map f (x:xs) ++ map f ys
+
+---------------------------------------------------------------------------------------------------
+
+--97 
+
+        Objetivo: map f (reverse xs) = reverse (map f xs)
+
+-> Caso base: 
+
+        map f (reverse [])             (r.1)
+        map f []                       (m.1)
+        []                             (r.1)
+        reverse ([])                   (m.1) 
+        reverse (map f [])
+
+
+-> Caso de Indução: map f (reverse (x:xs)) = reverse (map f (x:xs))
+
+        Hipotese: map f (reverse xs) = reverse (map f xs)
+
+        map f (reverse (x:xs))                          (r.2)
+        map f (reverse xs ++ [x])                       (96)  
+        map f (reverse xs) ++ map f [x]                 (H.I)
+        reverse (map f xs) ++ (map f [x])               (m.2)      
+        reverse (map f xs) ++ (f x) : map f []          (m.1)
+        reverse (map f xs) ++  (f x) : []           
+        reverse (map f xs) ++  [(f x)]                  (r.2)
+        reverse (f x : map f xs)                        (m.2)                                             
+        reverse (map f (x:xs))
