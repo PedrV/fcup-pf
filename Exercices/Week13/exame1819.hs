@@ -1,4 +1,5 @@
 -- Exame Ano Letivo 18/19 Epoca Normal --
+-- https://bit.ly/2ZGojcC
 
 data Arv a = No a (Arv a) (Arv a) | Folha
 
@@ -7,7 +8,7 @@ data Arv a = No a (Arv a) (Arv a) | Folha
 --b) [[1,2],[3]]
 --c) [11,12,13,14,15]
 --d) 240
---e) [3,4,5]
+--e) []
 --f) False
 --g) [(1,1), (4,4), (9,7), (16,10), (25,13), (36,16)]
 --h) [(x,y) | (x,y)<- zip [1,3..] [10,8..]]
@@ -16,7 +17,6 @@ data Arv a = No a (Arv a) (Arv a) | Folha
 --k) [(Bool -> Bool) -> [Bool] -> [Bool]]
 --l) N (Arv a) (Arv a) | F a
 --m) g :: (a -> Bool) -> [a] -> [a]
-
 
 --2
 --a) 
@@ -77,7 +77,7 @@ somaArv (No x t1 t2) (No y t3 t4) = No (x+y) (somaArv t1 t3) (somaArv t2 t4)    
 
 --7
 
-Objetivo: soma (somaArv t t) = 2 * soma t
+{- Objetivo: soma (somaArv t t) = 2 * soma t
 
 Caso Base:  soma (somaArv Folha Folha) (sArv.1)
         <=> soma (Folha)                (s1)
@@ -103,3 +103,4 @@ Caso de Indução: -- Supondo que isto se mantem entre 0 e n --
     <=> 2 * soma (No x t1 t2)
     
     c.q.d
+ -}

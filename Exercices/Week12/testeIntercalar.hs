@@ -51,7 +51,14 @@ partir [] _ = ([],[])
 partir (x:xs) n | x == n    = ([], x:xs)
                 | otherwise = ((x : fst (partir xs n)), snd (partir xs n))
 
+
 -- Incompleto
 --6 
---parts :: [a] -> [[a]]
---parts xs = [ [l,l1] | l<-xs, l1<- xs, l /= l1] ++ [xs]
+parts :: [a] -> [[[a]]]
+parts [] = [[]]
+parts (x:xs) = [[x]:ps | ps<-pss] ++ [(x:p):ps | (p:ps)<-pss]
+            where pss = parts xs
+
+
+-- ou usar isto em vez das linhas em recursao
+-- parts xs = [ (take n xs):ps  | n<-[1..length xs], ps<-parts(drop n xs) ]
