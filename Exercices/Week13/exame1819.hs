@@ -34,28 +34,28 @@ rfc xs = foldr (\x y -> if any (<=8) x then y+1 else y) 0 xs
 type Vert = Int
 type Graph = [(Vert,Vert)]
 
-{- transitiva :: Graph -> Bool
+transitiva :: Graph -> Bool
 transitiva [] = True
-transitiva (g:gs) = 
- -}
+transitiva gs = and [ elem (x,w) gs | (x,y) <- gs, (z,w) <- gs, y == z]
 
 
 --4
 
 iterate' :: (Enum a, Num a) => (a -> a) -> a -> [a]
-iterate' f x = [x | x <- map f [1..]]
-
+iterate' f x = x : [ f y | y <- iterate' f (x)]
 
 --5
 --a)
 
 deleteNth :: [a] -> Int -> [a]
+deleteNth xs 0 = xs
 deleteNth [] n = []
 deleteNth xs n = take (n-1) xs ++ deleteNth (drop n xs) n 
 
 --b)
 
 deleteNth' :: [a] -> Int -> [a]
+deleteNth' xs 0 = xs
 deleteNth' xs n = [ fst x | x<- zip xs [1..], (snd x) `mod` n /= 0 ]
 
 
