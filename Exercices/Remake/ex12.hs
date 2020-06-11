@@ -335,3 +335,170 @@ Hipotese de Inducao: length (insert x xs) = 1 + length xs
         1 + length (x:xs)
 
 ---------------------------------------------------------------------------------------------------
+
+--99
+
+data Arv a = Folha | No a (Arv a) (Arv a)
+
+intermedios :: Arv a -> Int
+intermedios Folha = 0                                                                   (int1)
+intermedios (No _ left right) = 1 + intermedios left + intermedios right                (int2)
+
+folhas :: Arv a -> Int
+folhas Folha = 1                                                                        (fol1)
+folhas (No _ left right) = folhas left + folhas right                                   (fol2)
+
+
+Objetivo: intermedios t < folhas t
+
+Caso Base:
+        intermedios Folha < folhas Folha        (int1) (fol1)
+        0 < 1
+
+Caso de Inducao: intermedios t < folhas t => intermedios (No x left right) < folhas (No x left right)
+
+Hipotese de Inducao: intermedios t < folhas t
+
+        intermedios (No x left right) < folhas (No x left right)                        (int2) (fol2)
+        1 + intermedios left + intermedios right  <  folhas left + folhas right         H.I
+        1 + 2*intermedios t < 2*folhas t
+        
+
+        
+---------------------------------------------------------------------------------------------------
+
+--100 (duvida)
+
+---------------------------------------------------------------------------------------------------
+
+--101
+
+data Arv a = Vazia | No a (Arv a) (Arv a)
+
+--a)
+soma :: Arv a -> a
+soma Vazia = 0                                                          (sA1)
+soma (No a left right) = a + (soma left) + (soma right)                 (sA2)
+
+--b)
+valorArv :: Arv a -> a
+valorArv Vazia = 0                                                      (vA1)
+valorArv (No x _ _) = x                                                 (vA2)
+
+--c)
+somaTree :: Arv a -> Arv a
+somaTree Vazia = Vazia                                                                                          (sT1)
+somaTree (No x Vazia Vazia) = No x Vazia Vazia                                                                  (sT2)
+somaTree (No x (No y Vazia Vazia) (No z Vazia Vazia)) = No (x+y+z) (No y Vazia Vazia) (No z Vazia Vazia)
+somaTree (No x left right) =  
+
+
+
+--d)
+
+--- Duvida ---
+
+
+Objetivo: soma t = valorArv (somaTree t)
+
+Caso Base:
+        soma Vazia                              (sA1)
+        0                                       (vA1)                              
+        valorArv 0                              (sT1)
+        valorArv (somaTree Vazia)
+
+Caso de Inducao: soma t = valorArv (somaTree t) => soma (No x t1 t2) = valorArv (somaTree (No x t1 t2))
+
+Hipotese de Inducao: soma t = valorArv (somaTree t)
+
+        -- (No x t1 t2) = (No x Vazia Vazia) 
+        soma (No x Vazia Vazia)                                                               (sA2)
+        x + (soma Vazia) + (soma Vazia)                                                       H.I 
+        x + (valorArv (somaTree Vazia)) + valorArv (somaTree Vazia)                           (sT1)  
+        x + (valorArv Vazia) + (valorArv Vazia)                                               (vA1)
+        x + 0 + 0                                                                             (Elem neutro)
+        x                                                                                     (vA2)   
+        valorArv (No x Vazia Vazia)                                                           (sT2)  
+        valorArv (somaTree (No x Vazia Vazia))
+
+
+---------------------------------------------------------------------------------------------------
+
+--102
+
+data Arv a = No a (Arv a) (Arv a) | Vazia
+
+simetrica :: Arv a -> Arv a
+simetrica Vazia = Vazia                                                                 (sim1)
+simetrica (No x left right) = (No x (simetrica right) (simetrica left))                 (sim2)
+
+listar Vazia = []                                                                       (list1)
+listar (No x left right) = listar left ++ [x] ++ listar right                           (list2)
+
+reverse [] = []                                                                         (rev1)
+reverse (x:xs) = reverse xs ++ [x]                                                      (rev2)
+
+Objetivo: listar t = reverse (listar (simetrica t))
+
+Caso Base: 
+        listar Vazia                                    (list1)
+        []                                              (rev1)
+        reverse ([])                                    (sim1)
+        reverse (listar [])                             (sim1)
+        reverse (listar (simetrica Vazia))
+
+Caso de Inducao: 
+        listar t = reverse (listar (simetrica t)) => listar (No x t1 t2) = reverse (listar (simetrica (No x t1 t2)))
+
+Hipotese de Inducao: listar t = reverse (listar (simetrica t))
+
+
+        listar (No x t1 t2)                                                                     (list2)
+        listar t1 ++ [x] ++ listar t2                                                           H.I
+        reverse (listar (simetrica t1)) ++ [x] ++ reverse (listar (simetrica t2))               (Identidade reverse sobre [x])
+        reverse (listar (simetrica t1)) ++ reverse [x] ++ reverse (listar (simetrica t2))       (Distributividade do reverse sobre ++) -- Provado 91
+        reverse (listar (simetrica t1) ++ [x] ++ listar (simetrica t2))                         (list2)
+        reverse (listar (No x (simetrica right) (simetrica left)))                              (sim2)
+        reverse (listar (simetrica (No x t1 t2)))
+
+---------------------------------------------------------------------------------------------------
+
+--103
+
+--a)
+
+foldTree :: (a -> b -> b -> b) -> b -> Arv a -> b
+foldTree f n Vazia = n                                                          (fold1)
+foldTree f n (No x t1 t2) = f x (foldTree f n t1) (foldTree f n t2)             (fold2)
+
+soma3 :: a -> b -> b -> b
+soma3 x y z = x + y + z         (s3)
+
+soma :: Arv a -> a
+soma Vazia = 0                                                          (sA1)
+soma (No a left right) = a + (soma left) + (soma right)                 (sA2)
+
+--b)
+Objetivo: soma t = foldtree soma3 0 t
+
+Caso Base: 
+        soma Vazia                              (sA1)                  
+        0
+        0
+        foldtree soma3 0 Vazia                  (fold1)
+
+
+Caso de Inducao: 
+        soma t = foldtree soma3 0 t => soma (No x t1 t2) = foldtree soma3 0 (No x t1 t2)
+
+Hipotese de Inducao:  soma t = foldtree soma3 0 t
+
+
+        soma (No x t1 t2)                                               (sA2)
+        x + soma t1 + soma t2                                           H.I
+        x + foldtree soma3 0 t1 + foldtree soma3 0 t2                   
+        x + foldtree soma3 0 t1 + foldtree soma3 0 t2                   (s3)
+        soma3 x (foldtree soma3 0 t1) (foldtree soma3 0 t2)             (fold2)
+        foldtree soma3 0 (No x t1 t2)
+
+---------------------------------------------------------------------------------------------------            

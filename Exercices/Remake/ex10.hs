@@ -54,7 +54,7 @@ maisEsq (No a left right) = maisEsq left
 
 remove' :: Ord a => a -> Arv a -> Arv a
 remove' _ Folha = Folha
-remove' x (No a Folha Folha) = if a == x then Folha else No a left right
+remove' x (No a Folha Folha) = if a == x then Folha else No a Folha Folha
 remove' x (No a left right) | x < a         = No a (remove' a left) right
                             | x > a         = No a left (remove' a right)
                             | otherwise     = No y left (remove' y right)
@@ -192,3 +192,8 @@ foldTreeR cons z t = foldArv g id t z           -- b ~ r -> r
 foldTreeL :: (acc -> a -> acc) -> acc -> Arv a -> acc
 foldTreeL conj z t = foldArv g id t z           -- b ~ acc -> acc
                    where g a lt rt = rt . flip conj a . lt
+
+
+simetrica :: Arv a -> Arv a
+simetrica Folha = Folha
+simetrica (No x left right) = (No x (simetrica right) (simetrica left)) 
