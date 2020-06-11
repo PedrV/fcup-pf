@@ -196,4 +196,4 @@ foldTreeL conj z t = foldArv g id t z           -- b ~ acc -> acc
 
 simetrica :: Arv a -> Arv a
 simetrica Folha = Folha
-simetrica (No x left right) = (No x (simetrica right) (simetrica left)) 
+simetrica (No x left right) = (No x (simetrica right) (simetrica left))

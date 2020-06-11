@@ -1,0 +1,4 @@
+-- Ficha 101
+-- Rec1718 
+   -1 g) l) [apenas um detalhe na l]
+   -6 b)
