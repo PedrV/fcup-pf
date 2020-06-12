@@ -7,7 +7,9 @@ c) 6
 d) [ (0,1),(0,3),(1,2),(1,4),(2,3),(3,4) ]
 e) [1,9,25,49,81]
 f) 6
-g) serie = (-2,1) : [ if y `mod` 2 == 0 then (-x,(abs z)*2+1) else (x,-((abs z)*2+1)) | (x,y)<- zip [4,6..] [1..], (z1,z)<-serie ]
+g) serie = 1 : [ if y `mod` 2 /= 0  then (abs x)*2+1 else -((abs x)*2+1)| (x,y)<- zip serie [0..] ]
+   serie1 = [ if y `mod` 2 == 0 then -x else x | (x,y)<- zip [2,4..] [0..]] 
+   final = [ (x,y) | (x,y)<-zip serie1 serie ]
 h) 7*8+3
 i) [Int] -> Bool
 j) (Num a, Ord a) [a -> Bool] -- errado antes

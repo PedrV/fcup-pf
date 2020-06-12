@@ -1,4 +1,6 @@
 -- Ficha 101
 -- Rec1718 
-   -1 g) l) [apenas um detalhe na l]
+   -1 l) [apenas um detalhe na l]
    -6 b)
+-- t1718
+   -6 (dada um numero e uma lista de numeros saber todas as combinacoes da lista de numeros, que originam aquele numero - pode ser usado repetidos)

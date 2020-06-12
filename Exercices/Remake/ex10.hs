@@ -197,3 +197,10 @@ foldTreeL conj z t = foldArv g id t z           -- b ~ acc -> acc
 simetrica :: Arv a -> Arv a
 simetrica Folha = Folha
 simetrica (No x left right) = (No x (simetrica right) (simetrica left))
+
+{- TreeMap -}
+data Tree k v = Leaf | Node (Tree k v) k v (Tree k v)
+
+list :: Tree k v -> [(k,v)]
+list Leaf = []
+list (Node left a x right) = list left ++ [(a,x)] ++ list right
