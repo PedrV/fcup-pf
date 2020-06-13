@@ -42,8 +42,9 @@ pitagoricos n = [(x,y,z) | x<-[1..n], y<-[1..n], z<-[1..n], x^2+y^2 == z^2 {-|| 
 
 --30
 forte :: String -> Bool
-forte xs = l >= 8 && n && d
+forte xs = l >= 8 && ma && d && mi
         where l = length xs
-              n = or [ x >= 'A' && x <= 'Z' | x<-xs]
+              mi = or [ x >= 'a' && x <= 'z' | x<-xs]
+              ma = or [ x >= 'A' && x <= 'Z' | x<-xs]
               d = or [ x >= '0' && x <= '9' | x<-xs]
 

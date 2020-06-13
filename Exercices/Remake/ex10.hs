@@ -54,6 +54,8 @@ maisEsq (No a left right) = maisEsq left
 
 remove' :: Ord a => a -> Arv a -> Arv a
 remove' _ Folha = Folha
+remove' x (No a Folha right) = if x == a then right else No x Folha (remove' x right)
+remove' x (No a left Folha) = if x == a then left else No x (remove  x left) Folha
 remove' x (No a Folha Folha) = if a == x then Folha else No a Folha Folha
 remove' x (No a left right) | x < a         = No a (remove' a left) right
                             | x > a         = No a left (remove' a right)
@@ -65,6 +67,10 @@ remove :: Ord a => a -> Arv a -> Arv a
 remove _ Folha = Folha
 remove x (No a Folha Folha) | x == a    = Folha
                             | otherwise = No a Folha Folha
+remove x (No a Folha right) | x == a    = right
+                            | otherwise = No x Folha (remove x right)
+remove x (No a left Folha) | x == a     = left
+                           | otherwise  = No x (remove x left) Folha
 remove x (No a left right) | x < a      = No a (remove x left) right
                            | x > a      = No a left (remove x right)
                            | otherwise  = No y (remove y left) right
@@ -153,6 +159,10 @@ sumArv (No a Folha Folha) = a
 sumArv (No a Folha right) = a + sumArv right
 sumArv (No a left Folha) = a + sumArv left
 sumArv (No a left right) = a + sumArv left + sumArv right
+
+{- sumArv :: Num a => Arv a -> a
+sumArv Folha = 0
+sumArv (No x left right) = x + (sumArv left) + (sumArv right) -}
 
 --71
 listardecr :: Arv a -> [a]

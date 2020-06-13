@@ -104,7 +104,7 @@ foldl1'' f xs = foldl f (head xs) (tail xs)
 foldr1' :: (a -> a -> a) -> [a] -> a
 foldr1' _ [] = error "folr1: folr1 is not defined for empty list"
 foldr1' f [x] = x
-foldr1' f (xs) = f (foldr1' f (init xs)) (last xs)
+foldr1' f (xs) = f (head xs) (foldr1' f (tail xs))
 
 foldr1'' :: (a -> a -> a) -> [a] -> a
 foldr1'' f xs = foldr f (last xs) (init xs)
@@ -145,3 +145,8 @@ mdc a b = fst $ until (\(a,b) -> b == 0) (\(a,b) -> (b, a `mod` b) ) (a,b)
 scanl' :: (b -> a -> b) -> b -> [a] -> [b]
 scanl' f n [] = [n]
 scanl' f n (x:xs) = [n] ++ scanl' f (f n x) xs
+
+scanr' :: (a -> b -> b) -> b -> [a] -> [b]
+scanr' _ x [] = [x]
+scanr' f x (y:ys) = (f y (head partialResult)) : partialResult
+    where partialResult = scanr' f x ys

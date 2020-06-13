@@ -72,7 +72,7 @@ Caso de Inducao:
         Hipotese de Inducao: (xs ++ ys) ++ zs = xs ++ (ys ++ zs)
 
         ((x:xs) ++ ys) ++ zs    (++2)
-        (x:(xs++ys)) ++ zs      (++2)
+        x:(xs++ys) ++ zs        (++2)
         x:((xs++ys) ++ zs)      H.I
         x:(xs ++ (ys ++ zs))    (++2)
         (x:xs) ++ (ys ++ zs)
@@ -163,7 +163,7 @@ take n [] | n > 0 = []                      (t2)
 take n (x:xs) | n > 0 =  x: take (n-1) xs   (t3)
 
 drop 0 xs = xs                              (d1)
-drop n []| n > 0 = []                       (d2)
+drop n [] | n > 0 = []                      (d2)
 drop n (x:xs) |n > 0 = drop (n−1) xs        (d3)    
 
 
@@ -361,8 +361,9 @@ Hipotese de Inducao: intermedios t < folhas t
 
         intermedios (No x left right) < folhas (No x left right)                        (int2) (fol2)
         1 + intermedios left + intermedios right  <  folhas left + folhas right         H.I
-        1 + 2*intermedios t < 2*folhas t
-        
+        Pela hipotese de indução intermedios left < folhas left, e intermedios right < folhas right,
+        logo intermedios left + intermedios right < folhas left + folhas right, acrecentando 1 a intermedios não
+        é suficiente para tornar falsa a afirmação        
 
         
 ---------------------------------------------------------------------------------------------------
@@ -448,7 +449,7 @@ Caso Base:
         reverse (listar (simetrica Vazia))
 
 Caso de Inducao: 
-        listar t = reverse (listar (simetrica t)) => listar (No x t1 t2) = reverse (listar (simetrica (No x t1 t2)))
+        listar t = reverse (listar (simetrica t)) => listar (No x t1 t2) = reverse (listar (simetrica (No x t2 t1)))
 
 Hipotese de Inducao: listar t = reverse (listar (simetrica t))
 
@@ -458,8 +459,8 @@ Hipotese de Inducao: listar t = reverse (listar (simetrica t))
         reverse (listar (simetrica t1)) ++ [x] ++ reverse (listar (simetrica t2))               (Identidade reverse sobre [x])
         reverse (listar (simetrica t1)) ++ reverse [x] ++ reverse (listar (simetrica t2))       (Distributividade do reverse sobre ++) -- Provado 91
         reverse (listar (simetrica t1) ++ [x] ++ listar (simetrica t2))                         (list2)
-        reverse (listar (No x (simetrica right) (simetrica left)))                              (sim2)
-        reverse (listar (simetrica (No x t1 t2)))
+        reverse (listar (No x (simetrica t1) (simetrica t2)))                                   (sim2)
+        reverse (listar (simetrica (No x t2 t1)))
 
 ---------------------------------------------------------------------------------------------------
 

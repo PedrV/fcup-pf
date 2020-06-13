@@ -3,8 +3,8 @@ a) [Char]
 b) (Char,Char,Char) 
 c) [(Bool,Char)]
 d) ([Bool], [Char])
-e) [([a] -> [a])]
-f) [(Bool -> Bool)]
+e) [[a] -> [a]]
+f) [Bool -> Bool]
  -}
 
 {- 15 
@@ -16,7 +16,7 @@ f) [(Bool -> Bool)]
  -}
 
  --16
- -- f :: (a -> a) -> (Int -> [[Int]])
+ -- f :: (a -> a) -> Int -> [[Int]]
  -- g :: a -> a
 
 {- 17 

@@ -15,7 +15,7 @@ triangulo x y z | x >= y+z  = False
 --3
 area :: Float -> Float -> Float -> Float
 area x y z = sqrt(s*(s-x)*(s-y)*(s-z))
-            where s = z+x+y
+            where s = (z+x+y)/2
 
 --4
 split :: [a] -> ([a],[a])
@@ -26,8 +26,8 @@ split xs = (take l xs, drop l xs)
 last' :: [a] -> a
 last' xs = head $ drop ((length xs) - 1) xs
 
-init' :: [a] -> a
-init' (x:xs) = x
+init' :: [a] -> [a]
+init' xs = reverse $ tail $ reverse xs
 
 --6
 bino :: Float -> Float -> Float

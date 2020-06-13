@@ -37,7 +37,7 @@ elem' n (x:xs) | x == n     = True
 
 --33
 concat'' :: [[a]] -> [a]
-concat'' (xss) = [x | xs<-xss, x<-xs]
+concat'' (xss) = [ x | xs<-xss, x<-xs]
 
 replicate'' :: Int -> a -> [a]
 replicate'' n x = [x | y<-[1..n]]
@@ -58,7 +58,6 @@ square n x | n*n <= x && (n+1)*(n+1) > x    = n
 --b)
 isqrt :: Int -> Int
 isqrt n = head [x | x<-[0..n], x*x <= n && (x+1)*(x+1) > n ]
-
 
 --35
 --a)
@@ -174,9 +173,8 @@ msort xs = merge (msort l) (msort r)
 
 -- Hard to arbitrary number -- 
 --45
-bits :: Int -> [[Bool]]
-bits n = [ [i,j] | i<-[True, False], j<-[True,False]] 
-
+bits :: [[Bool]]
+bits = [ [i,j] | i<-[True, False], j<-[True,False]] 
 
 -- VIP --
 --46
@@ -184,3 +182,6 @@ permutations :: Eq a => [a] -> [[a]]
 permutations [] = [[]]
 permutations l = [a : x | a<-l, x<-(permutations $ filter (\x -> x /= a) l)]
 
+permutations' :: Eq a => [a] -> [[a]]
+permutations' [] = [[]]
+permutations' xs = concatMap (\x -> map (x:) $ permutations $ delete x xs) xs
