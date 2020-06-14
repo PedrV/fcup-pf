@@ -93,9 +93,12 @@ nelem (No a _ esq dir) = 1 + (nelem esq) + (nelem dir)
 
 --b)
 
+
 update :: ArvC a -> ArvC a
 update Vazia = Vazia
-update (No _ x esq dir) = 
+update (No a x esq dir) = (No a (k1+k2) (No x1 k1 esq1 dir1) (No x2 k2 esq2 dir2))
+                        where (No x1 k1 esq1 dir1) = update esq
+                              (No x2 k2 esq2 dir2) = update dir
 
 
 
