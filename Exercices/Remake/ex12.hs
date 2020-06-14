@@ -368,7 +368,22 @@ Hipotese de Inducao: intermedios t < folhas t
         
 ---------------------------------------------------------------------------------------------------
 
---100 (duvida)
+--100 (Nao exame)
+
+listarAcc Vazia x = listar Vazia ++ x          (listar1)
+                   = [] ++ xs 
+                   xs   
+
+listarAcc (No x esq dir) xs
+lsitar (No x esq dir) ++ xs = 
+listar esq ++ [x] + listar dir ++ xs
+listarAcc esq ([x] ++ listar dir ++ xs)
+listarAcc esq ([x] ++ (listar dir ++ xs))
+listarAcc esq ([x] ++ listarAcc dir xs)
+listarAcc esq (x : listarAcc dir xs)
+
+listarAcc Vazia x1 = x1
+listarAcc (No x esq dir) x2 = listarAcc esq (x:listarAcc dir x2)
 
 ---------------------------------------------------------------------------------------------------
 
@@ -377,28 +392,31 @@ Hipotese de Inducao: intermedios t < folhas t
 data Arv a = Vazia | No a (Arv a) (Arv a)
 
 --a)
-soma :: Arv a -> a
+soma :: Num a => Arv a -> a
 soma Vazia = 0                                                          (sA1)
 soma (No a left right) = a + (soma left) + (soma right)                 (sA2)
 
 --b)
-valorArv :: Arv a -> a
+valorArv :: Num a => Arv a -> a
 valorArv Vazia = 0                                                      (vA1)
 valorArv (No x _ _) = x                                                 (vA2)
 
 --c)
-somaTree :: Arv a -> Arv a
-somaTree Vazia = Vazia                                                                                          (sT1)
-somaTree (No x Vazia Vazia) = No x Vazia Vazia                                                                  (sT2)
-somaTree (No x (No y Vazia Vazia) (No z Vazia Vazia)) = No (x+y+z) (No y Vazia Vazia) (No z Vazia Vazia)
-somaTree (No x left right) =  
+somasTree :: Num a => Arv a -> Arv a
+somasTree Vazia = Vazia
+somasTree (No x esq dir) = (No (x + valorArv se + valorArv sd) se sd)
+                        where se = somaTree esq
+                              sd = somaTree dir  
 
-
+{- somasTree' :: Num a => Arv a -> Arv a
+somasTree' Vazia = Vazia
+somasTree' (No x esq dir) = (No (x+se+sd) stse stsd)
+                        where stse = somasTree' esq
+                              stsd = somasTree' dir
+                              se = soma esq
+                              sd = soma dir   -}
 
 --d)
-
---- Duvida ---
-
 
 Objetivo: soma t = valorArv (somaTree t)
 
@@ -410,18 +428,16 @@ Caso Base:
 
 Caso de Inducao: soma t = valorArv (somaTree t) => soma (No x t1 t2) = valorArv (somaTree (No x t1 t2))
 
+                - soma esq = valorArv (somasTree esq)
+                - soma dir = valorArv (somasTree dir)
+
 Hipotese de Inducao: soma t = valorArv (somaTree t)
 
-        -- (No x t1 t2) = (No x Vazia Vazia) 
-        soma (No x Vazia Vazia)                                                               (sA2)
-        x + (soma Vazia) + (soma Vazia)                                                       H.I 
-        x + (valorArv (somaTree Vazia)) + valorArv (somaTree Vazia)                           (sT1)  
-        x + (valorArv Vazia) + (valorArv Vazia)                                               (vA1)
-        x + 0 + 0                                                                             (Elem neutro)
-        x                                                                                     (vA2)   
-        valorArv (No x Vazia Vazia)                                                           (sT2)  
-        valorArv (somaTree (No x Vazia Vazia))
-
+        valorArv (somaTree (No x esq dir))                                                                              (sT2)
+        valorArv (No (x + valorArv (somasTree esq) + valorArv (somasTree dir)) (somasTree esq) (somasTree dir))         (vA2)
+        x + valorArv (somasTree esq) + valorArv (somasTree dir)                                                         H.I
+        x + soma esq + soma dir                                                                                         (sA2)
+        soma (No x esq dir)
 
 ---------------------------------------------------------------------------------------------------
 

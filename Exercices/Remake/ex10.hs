@@ -154,7 +154,7 @@ removeAVL x (No a left right) | x < a          = equi (No a (removeAVL x left) r
 
 --70
 sumArv :: Num a => Arv a -> a 
-sumArv Folha = error "sumArv: Arvore vazia"
+sumArv Folha = error "sumArv: Arvore Folha"
 sumArv (No a Folha Folha) = a
 sumArv (No a Folha right) = a + sumArv right
 sumArv (No a left Folha) = a + sumArv left
