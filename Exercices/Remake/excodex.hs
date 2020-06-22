@@ -190,6 +190,15 @@ remover n (No x left right) |  n < x        = No x (remover n left) right
 [] : [[]] = [[],[]] 
 -}
 
+intercalate' :: [a] -> [[a]] -> [a]
+intercalate' _ [] = []
+intercalate' ys xs = concat [ x ++ ys | x<-(init xs) ] ++ last xs
+
+intercalate'' :: [a] -> [[a]] -> [a]
+intercalate'' _ [] = []
+intercalate'' ys (xs:xss) = xs ++ ys ++ intercalate'' ys xss
+
+
 rot13 :: IO ()
 rot13 = do
     content <- getContents
@@ -216,3 +225,241 @@ rot13String (s:ss) = if all (== False) [(elem s ['a'..'m']), (elem s ['A'..'M'])
                      else if ( or [(elem s ['a'..'m']), (elem s ['A'..'M'])] ) then
                           foldl (\a _ -> succ a) s [1..13] : rot13String ss
                           else foldl (\a _ -> pred a) s [1..13] : rot13String ss
+
+
+
+{- forte :: String -> Bool
+forte xs = length >=6 && mais && mins && dig
+        where mais = or [ x >= 'A' && x <= 'Z' | x<-xs ]
+              mins = or [ x >= 'a' && x <= 'z' | x<-xs ]
+              digs = or [ x >= '0' && x <= '9' | x<-xs ]
+
+        
+and :: [Bool] -> Bool
+and [] = True
+and (x:xs) | x          = and xs
+           | otherwise  = False
+
+or :: [Bool] -> Bool
+or [] = False
+or (x:xs) | x           = True
+          | otherwise   = or xs
+
+intersperce :: a -> [a] -> [a]
+intersperce _ [] = []
+intersperce n [x] = [x] 
+intersperce n (x:xs) = x : n :  intersperce n xs  
+
+intersperce :: a -> [a] -> [a]
+intersperce _ [] = []
+intersperce n [x] = [x] 
+intersperce n xs =  concat [ [x,n] | x<-xs ]
+
+anyZero :: (Integer -> Integer) -> Integer -> Bool
+anyZero f 0 = f 0 == True
+anyZero f n | f n == 0          = True
+            | otherwise         = anyZero f (n-1)
+
+
+anyZero :: (Integer -> Integer) -> Integer -> Bool
+anyZero f n =  or [ f x == 0 | x<-[0..n] ]
+
+insert :: Ord a => a -> [a] -> [a]
+insert n [] = x
+insert n (x:xs) | n < x         = n : x : xs
+                | otherwise     = x : insert n xs
+
+isort :: Ord a => [a] -> [a]
+isort [] = []
+isort (x:xs) = insert x (isort xs)
+
+minimum :: Ord a => [a] -> a
+minimum [x] = x
+minimum (x:xs) = min x (minimum xs)
+
+delete :: Eq a => a -> [a] -> [a]
+delete _ [] = []
+delete n (x:xs) | n == x        = xs
+                | otherwise     = x : delete n xs
+
+merge :: Ord a => [a] -> [a] -> [a]
+merge xs [] = xs
+merge [] ys = ys
+merge (x:xs) (y:ys) | x < y     = x : merge xs y:ys
+                    | x > y     = y : merge xs ys
+                    | otherwise = x : y : merge xs ys
+
+msort :: Ord a => [a] -> [a]
+msort [] = []
+msort xs = merge (msort l) (msort r)
+        where l = take m xs
+              r = drop m xs
+              m = (length xs) `div` 2
+
+
+permutations :: Eq a => [a] -> [[a]]
+permutations [] = [[]]
+permutations xs = concatMap (\x -> map (x:) $ permutations $ delete x xs) xs
+
+
+(+++) :: [a] -> [a] -> [a]
+(+++) xs ys = foldr (\a b -> a : b) ys xs
+
+reverse :: [a] -> [a]
+reverse xs = foldr (\a b -> b ++ [a] ) [] xs
+
+reverse :: [a] -> [a]
+reverse xs = foldl (\b a -> a : b) [] xs
+
+dec2Int :: Num a => [a] -> a
+dec2Int xs = foldl (\b a -> b*10 + a) 0 xs 
+
+zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipWith _ xs [] = []
+zipWith _ [] ys = []
+zipWith f (x:xs) (y:ys) = (f x y) : zipWith xs ys
+
+shift :: [a] -> [a]
+shift [] = []
+shift (x:xs) = xs ++ [x]
+
+rotate :: [a] -> [[a]]
+rotate xs = foldr (a b -> b ++ [(shift (last b))]) [xs] (tail xs)
+
+foldr1 :: (a -> a -> a) -> [a] -> a
+foldr1 f [x] = x
+foldr1 f (x:xs) = f x (foldr f xs)
+
+foldl1 :: (a -> a -> a) -> [a] -> a
+foldl1 f [x] = x
+foldl1 f (x:xs) = foldl1 f (f x (head xs)):(tail xs)
+
+
+maximum :: Ord a => [a] -> a
+maximum xs = foldr1 (\a1 a2 -> if a1 > a2 then a1 else a2) xs
+
+until :: (a -> Bool) -> (a -> a) -> a -> a
+until p f x | p x       = x
+            | otherwise = until p f (f x)
+
+mdc :: Num a => a -> b -> b
+mdc a b = fst $ until (\(a,b) -> b == 0) (\(a,b) -> (b, a `mod` b))  (a,b)
+
+factorial = 1 : zipWith (*) factorial [1..]
+fibs = 0 : 1 : zipWith (+) fibs (tail fibs)
+
+mergeU :: Ord a => [a] -> [a] -> [a]
+mergeU xs [] = xs
+mergeU [] ys = ys
+mergeU (x:xs) (y:ys) | x < y     = x : mergeU xs y:ys
+                     | x > y     = y : mergeU xs ys
+                     | otherwise = x : mergeU xs ys
+
+hamming = 1 : merge l5 (merge l2 l3)
+        where l5 = map (*5) hamming
+              l3 = map (*3) hamming
+              l2 = map (*2) hamming
+
+nextpascal :: [Int] -> [Int]
+nextpascal xs = [1] ++ zipWith xs (tail xs) ++ [1]
+
+pascal = [[1]] ++ map nextpascal pascal
+
+data Arv a = Vazia | No a (Arv a) (Arv a)
+
+listar :: Arv a -> a
+listar Vazia = []
+listar (No x esq dir) = listar esq ++ [x] ++ listar dir
+
+
+qsort :: Ord a => [a] -> [a]
+qsort [] = []
+qsort (x:xs) = qsort left ++ [x] ++ qsort right
+            where left = [ y | y<-xs, y < x]
+                  right = [ y | y<-xs, y > x]  
+
+
+constructTree :: Ord a => [a] -> Arv a
+constructTree [] = Vazia
+constructTree xs = No m (constructTree left) (constructTree right)
+                where left = take m xs
+                      r:right = drop m xs
+                      m = (!!) l list
+                      l = (length list) `div` 2
+                      list = qsort xs
+
+contains :: Ord a => a -> Arv a -> Bool
+contains x Vazia = False
+contains x (No n left right) | x < n        = contains x left
+                             | x > n        = contains x right
+                             | otherwise    = True
+
+insert :: Ord a => a -> Arv a -> Arv a
+insert x Vazia = No x Vazia Vazia
+insert x (No n esq dir) | x < n         = No n (insert x esq) dir
+                        | x > n         = No n esq (insert x dir)
+                        | otherwise     = No x esq dir
+
+
+mais_dir :: Arv a -> a
+mais_dir (No x _ Vazia) = x
+mais_dir (No _ _ dir) ) mais_dir dir
+
+
+remove :: Ord a => a -> Arv a -> Arv a
+remove x (No n Vazia Vazia) = if x == n then Vazia else No n Vazia Vazia
+remove x (No n esq Vazia) = if x == n then esq else No n (remove x esq) Vazia  
+remove x (No n Vazia dir) = if x == n then dir else No n Vazia (remove x dir)  
+remove x (No n esq dir) | x < n     = No n (remove x esq) dir
+                        | x > n     = No n esq (remove x dir)
+                        | otherwise  = No y (remove y esq) dir
+                        where y = mais_dir left
+
+
+listard :: Arv a -> a
+listard Vazia = []
+listard (No x esq dir) = listard dir ++ [x] ++ listard esq
+
+
+somaA :: Num a => Arv a -> a
+somaA Vazia = 0 
+somaA (No a esq dir) = a + somaA esq + somaA dir
+
+
+nivel :: Int -> Arv a -> [a]
+nivel _ Vazia = []
+nivel 0 (No x _ _) = [x]
+nivel n (No x esq dir) = nivel (n-1) esq ++ nivel (n-1) dir  -}
+
+
+desvio Vazia = 0
+desvio (No x esq dir) = depth esq - depth dir
+
+
+depth Vazia = 0
+depth (No x esq dir) = 1 + max (depth esq) (depth dir)
+
+rotL :: Arv a -> Arv a
+rotL (No x t1 (No y t2 t3)) = No y (No x t1 t2) t3
+rotL t = t
+
+rotR :: Arv a -> Arv a
+rotR (No x (No y t1 t2) t3) = No y t1 (No x t2 t3)
+rotR t = t
+
+
+corrL :: Arv a -> Arv a
+corrL (No x esq dir) | d == 1   = rotL (No x esq (rotR dir))
+                     | otherwise = rotL (No x esq dir)
+                     where d  =  desvio dir
+corrL t = t
+
+corrR :: Arv a -> Arv a
+corrR (No x esq dir) | d == -1   = rotR (No x (rotL esq) dir)
+                     | otherwise = rotR (No x esq dir)
+                     where d  =  desvio esq
+corrR t = t
+
+equi t | d == 2     = corrR t
+       |  d== -2    = coorL t
+       | otherwise =  t
